@@ -4,7 +4,7 @@
 
 #########################################################4####################################################
 
-#Global variables
+#Global Variables (GV)
 	    BLUE='\033[1;34m'
 		RED='\033[1;31m'
 		YELLOW='\033[1;33m'
@@ -13,12 +13,12 @@
 
 		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue...${NC}"
 		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back...${NC}"
-		#code to read from keyboard without return
+#Code to read from keyboard without return
 		READAK="read -n 1"
 		
 #########################################################4####################################################
 
-#Export
+#Export GV
 	    export BLUE
 		export RED
 		export YELLOW
@@ -39,10 +39,10 @@ f_banner(){
            #            _       _     _    _    _     _    __     __            #
            #           | |     | |   | \  | |  | |   | |   \ \   / /            #
            #           | |     | |   |  \ | |  | |   | |    \ \_/ /             #
-           #           | |     | |   |   \| |  | |   | |    / ___ \             #
+           #           | |     | |   |   \| |  | |   | |    /  _  \             #
            #           | |___  | |   | |\   |  | |___| |   / /   \ \            #
            #           |_____| |_|   |_| \__|  |_______|  /_/     \_\           #
-           #            By D3spere@ux                                           #
+           #           By D3spere@ux                                            #
            #                                                                    #
            ###################################################################### ${NC}"   
         echo
@@ -67,54 +67,92 @@ f_error() {
 f_setip () {
 		clear
 		f_banner
+	#Get data from user (IP - Gateway - DNS)	
         echo -e -n "${YELLOW}Static IP: ${NC}"   
-                read staticip
-        echo -e -n "${YELLOW}Gateway: ${NC}"
-                read gateway
-	#Backup ifcfg-ens33
-        echo
-        cp /etc/sysconfig/network-scripts/ifcfg-ens33 /etc/sysconfig/network-scripts/ifcfg-ens33.bk
-
-    #Config files
-        echo "
-        TYPE=Ethernet
-        DEVICE=ens33
-        NAME=ens33
-        BOOTPROTO=static
-        IPADDR=$staticip
-        PREFIX=24
-        GATEWAY=$gateway
-        DNS1=8.8.8.8
-        DNS2=8.8.4.4
-        ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
-
-        clear
-        echo -e "${YELLOW}Backing up & Assigning the Static IP ...$NC"
-        echo
-    #Restart network services
-        systemctl restart network.service
-        ifconfig ens33
-        cat /etc/resolv.conf
-        echo
-		clear
-    #Check ping
-		echo -e -n "${YELLOW}CHECKING...${NC}"
+            read staticip
+        echo -e -n "${YELLOW}Gateway  : ${NC}"
+			read gateway
+		echo -e -n "${YELLOW}DNS-1    : ${NC}"
+			read dns1
+		echo -e -n "${YELLOW}DNS-2    : ${NC}"
+			read dns2
 			echo
-			if ping -q -c 1 -W 1 google.com >/dev/null; then
+	#Confirm data from user
+		f_confirmdata() {	
+			echo -e -n "${YELLOW}Please confirm again (YES/NO): ${NC}"
+				read confirmdata
 				echo
-				clear
-				echo
-				echo -e "${YELLOW}Alright, Your IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
-				echo
-				echo -e "$PAKTGB"
-				read $READAK
-				else
-				echo
-				echo -e "${YELLOW}Please check your network connection and try again...${NC}"
-				echo
-				echo -e "$PAKTGB"
-				read $READAK
-				fi
+			case $confirmdata in
+				yes|Yes|YES|y|Y)
+			#Backup ifcfg-ens33
+					echo
+					cp -a /etc/sysconfig/network-scripts/ifcfg-ens33 /etc/sysconfig/network-scripts/ifcfg-ens33.bk
+			#Config files
+					echo "
+					TYPE=Ethernet
+					DEVICE=ens33
+					NAME=ens33
+					BOOTPROTO=static
+					IPADDR=$staticip
+					PREFIX=24
+					GATEWAY=$gateway
+					DNS1=$dns1
+					DNS2=$dns2
+					ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
+
+					clear
+					echo -e "${YELLOW}Backing up & Assigning the Static IP ...$NC"
+					echo
+			#Restart network services
+					systemctl restart network.service
+					ifconfig ens33
+					cat /etc/resolv.conf
+					echo
+					clear
+			#Check ping
+					echo -e -n "${YELLOW}CHECKING...${NC}"
+						echo
+						if ping -q -c 1 -W 1 google.com >/dev/null; then
+							echo
+							clear
+							echo
+							echo -e "${YELLOW}Alright, Your IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
+							echo
+							else
+							echo
+							echo -e "${YELLOW}Please check your network connection and try again...${NC}"
+							echo
+							fi
+								;;
+				no|No|NO|n|N)
+					echo -e "${YELLOW}Alright, slow down. Let's try again!${NC}"
+					sleep 2
+					f_setip
+					;;
+				*)
+					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+					echo
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					sleep 2
+					clear
+				#Show data for user again
+					echo
+					echo -e "${BLUE}Your Input: ${NC}"
+					echo
+					echo -e "${YELLOW}[+] Static IP: $staticip${NC}"
+					echo -e "${YELLOW}[+] Gateway  : $gateway${NC}"
+					echo -e "${YELLOW}[+] DNS-1    : $dns1${NC}"
+					echo -e "${YELLOW}[+] DNS-2    : $dns2${NC}"
+					echo
+					f_confirmdata
+					;;
+					esac
+			}
+			f_confirmdata
+			echo
+			echo -e "$PAKTGB"
+			echo
+			read $READAK
 	}
 
 ##############################################################################################################
@@ -183,16 +221,16 @@ f_newuser() {
 					echo -e "${YELLOW}Welldone, created user ${BLUE}'$username'${YELLOW} successfully!${NC}"
 					;;
 				*)
-					echo -e "${RED}${BLINK} *** Invalid choice *** ${NC}"
+					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
 					echo
-					echo -e "${YELLOW}Please enter again: 'YES' or 'NO'${NC}"
-					sleep 1.5
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					sleep 2
 					clear
 					f_answersudo
 					;;
 					esac
 			}
-		f_answersudo
+			f_answersudo
 	#Multi Users
 			echo
 			echo -e "$PAKTGB"
@@ -424,7 +462,7 @@ f_anon_dropbox() {
 	
 ##############################################################################################################
 
-#Searching Software/Application	
+#Searching Software/Application
 f_search() {
 		clear
 		f_banner
