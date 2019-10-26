@@ -1,7 +1,6 @@
 #!/bin/bash
-#Create and modify by Brian Dao (D3spere@ux)
-#This tool uses for Exercises LPI (Linux Professional Institute)
-#JK-ENR-HA-670
+#Create and modify by D3spere@ux
+#This tool uses for Exercises LPI (Linux Professional Institute) or person who working in Fedora distro field.
 
 #########################################################4####################################################
 
@@ -12,7 +11,8 @@
 		NC='\033[0m'
 		BLINK='\033[5m'
 
-		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back... ${NC}"
+		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue...${NC}"
+		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back...${NC}"
 		#code to read from keyboard without return
 		READAK="read -n 1"
 		
@@ -25,6 +25,7 @@
 		export NC
 		export BLINK
 		
+		export PAKTC
 		export PAKTGB
 		export READAK
 		
@@ -70,10 +71,9 @@ f_setip () {
                 read staticip
         echo -e -n "${YELLOW}Gateway: ${NC}"
                 read gateway
-    #Backup Hostname
-        echo "Backing up & Assigning the Static IP ..."
-                echo ""
-                cp /etc/sysconfig/network-scripts/ifcfg-ens33 /etc/sysconfig/network-scripts/ifcfg-ens33.bk
+	#Backup ifcfg-ens33
+        echo
+        cp /etc/sysconfig/network-scripts/ifcfg-ens33 /etc/sysconfig/network-scripts/ifcfg-ens33.bk
 
     #Config files
         echo "
@@ -89,38 +89,43 @@ f_setip () {
         ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
 
         clear
-                echo -e "${YELLOW}Backing up & Assigning the Static IP ...$NC"
+        echo -e "${YELLOW}Backing up & Assigning the Static IP ...$NC"
         echo
     #Restart network services
         systemctl restart network.service
         ifconfig ens33
         cat /etc/resolv.conf
-        echo ""
-
+        echo
+		clear
     #Check ping
-        if ping -q -c 1 -W 1 google.com >/dev/null; then
-                                echo -e "${YELLOW}Alright, Your IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
-                                echo
-                                echo -e "$PAKTGB"
-                                read $READAK
-                        else
-								echo
-                                echo -e "${YELLOW}Please check your network connection and try again...${NC}"
-                                echo
-                                echo -e "$PAKTGB"
-                                read $READAK
-                        fi
+		echo -e -n "${YELLOW}CHECKING...${NC}"
+			echo
+			if ping -q -c 1 -W 1 google.com >/dev/null; then
+				echo
+				clear
+				echo
+				echo -e "${YELLOW}Alright, Your IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
+				echo
+				echo -e "$PAKTGB"
+				read $READAK
+				else
+				echo
+				echo -e "${YELLOW}Please check your network connection and try again...${NC}"
+				echo
+				echo -e "$PAKTGB"
+				read $READAK
+				fi
 	}
 
 ##############################################################################################################
 
-#Exercise 2: Connect Putty
+#Exercise 2: Connect Putty on Windows
 f_putty() {
 		clear
 		f_banner
-		echo -e "${BLUE}Step 1: ${YELLOW}Open PuTTY (Windows + R) and type: putty${NC}"
-		echo -e "${BLUE}Step 2: ${YELLOW}Input the target IP (SSH) and click Open${NC}"
-		echo -e "${BLUE}Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account${NC}"
+		echo -e "${BLUE}   Step 1: ${YELLOW}Download ${BLUE}(https://www.putty.org)${YELLOW}, use key combination (Windows + R) and type: putty.${NC}"
+		echo -e "${BLUE}   Step 2: ${YELLOW}Input the target IP (SSH) and click Open.${NC}"
+		echo -e "${BLUE}   Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account.${NC}"
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -136,7 +141,9 @@ f_hostname() {
 		read hostname
 		hostnamectl set-hostname $hostname
 		clear
-		hostnamectl status
+		echo -e "${YELLOW}Here is your new hostname: ${NC}"
+		echo
+		hostname
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -157,25 +164,26 @@ f_newuser() {
 		read password
 		useradd -m $username -c "$fullname"
 		echo "$username:$password" | chpasswd
+		echo
+		echo -e "$PAKTC"
+		read $READAK		
 		clear
-	#Ask for sudoer
+	#Ask for sudoer privilege
 		f_answersudo () {
-			echo -e -n "${YELLOW}Can '$username' uses sudo (YES/NO)? ${NC}"
+			echo -e -n "${YELLOW}Can ${BLUE}'$username'${YELLOW} uses sudo (YES/NO)? ${NC}"
 				read answersudo
 				echo
 			case $answersudo in
 				yes|Yes|YES|y|Y)
 					usermod -aG wheel $username; id $username; grep "$username" /etc/passwd
 					echo
-					echo -e "${YELLOW}Welldone, added user '$username' to group wheel(sudo) successfully!${NC}"
+					echo -e "${YELLOW}Welldone, added user ${BLUE}'$username'${YELLOW} to group wheel(sudo) successfully!${NC}"
 					;;
 				no|No|NO|n|N)
-					echo
-					echo -e "${YELLOW}Welldone, created user '$username' successfully!${NC}"
+					echo -e "${YELLOW}Welldone, created user ${BLUE}'$username'${YELLOW} successfully!${NC}"
 					;;
 				*)
-					echo
-					echo -e "${RED}${BLINK} *** Invalid choice or entry *** ${NC}"
+					echo -e "${RED}${BLINK} *** Invalid choice *** ${NC}"
 					echo
 					echo -e "${YELLOW}Please enter again: 'YES' or 'NO'${NC}"
 					sleep 1.5
@@ -183,7 +191,7 @@ f_newuser() {
 					f_answersudo
 					;;
 					esac
-		}
+			}
 		f_answersudo
 	#Multi Users
 			echo
@@ -197,9 +205,9 @@ f_newuser() {
 f_timedate() {
 		clear
 		f_banner
-		echo -e -n "${YELLOW}Input Date (Example:2019-10-23): ${NC}"
+		echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): ${NC}"
 		read date
-		echo -e -n "${YELLOW}Input Time (EXample:19:30:50): ${NC}"
+		echo -e -n "${YELLOW}Input Time (Example: 19:30:50): ${NC}"
 		read time
 		timedatectl set-ntp false
 		timedatectl set-local-rtc 0
@@ -207,7 +215,9 @@ f_timedate() {
 		timedatectl set-time $time
 		timedatectl set-timezone Asia/Ho_Chi_Minh
 		clear
-		timedatectl status
+		echo -e "${YELLOW}Here is your new time & date status: ${NC}"
+		echo
+		date
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -277,10 +287,11 @@ f_openservice() {
 		clear
 		f_banner
 	#Check install Firewalld
+		echo -e "${YELLOW}[+] Install Firewalld... ${NC}"
 		yum install -y firewalld
 		clear
 	#Add single service
-		echo -e -n "${YELLOW}Enter service: ${NC}"
+		echo -e -n "${YELLOW}Enter service (Example: http,ftp,dns,...): ${NC}"
 		read service
 		firewall-cmd --add-service=$service --permanent; firewall-cmd --reload
 	#Restart firewalld
@@ -293,7 +304,6 @@ f_openservice() {
 		echo -e "${YELLOW}Lists your current services running:${NC}"
 		echo
 		firewall-cmd --list-services; firewall-cmd --list-ports
-		echo
 		echo -e "$PAKTGB"
 		read $READAK
 	}
@@ -307,6 +317,7 @@ f_webserver() {
 	#Check the Internet
 		
 	#Install Basic Web Server & Elinks package
+		echo -e "${YELLOW}[+] Install "Basic Web Server" and elinks...${NC}"
 		yum groupinstall -y "Basic Web Server"
 		yum install -y elinks
 	#Backup file httpd.conf
@@ -323,10 +334,89 @@ f_webserver() {
 	#Restart httpd service
 		systemctl start httpd; systemctl enable httpd; systemctl restart httpd
 		clear
-		echo -e "${YELLOW}Alright, this is 2 ways to see the result: ${NC}"
+		echo -e "${YELLOW}Alright, 2 ways to see the result: ${NC}"
 		echo
 		echo -e "${YELLOW}+ Open new tab and type: ${BLUE}elinks http://localhost. ${NC}"
 		echo -e "${YELLOW}+ Open Web Browser and redirect to: ${BLUE}http://localhost. ${NC}"
+		echo
+		echo -e "$PAKTGB"
+		read $READAK
+	}
+
+##############################################################################################################
+
+#Exercise 9: Install and config FTP Anonymous Drop Box with a shared folder.
+f_anon_dropbox() {
+		clear
+		f_banner
+	#Install VSFTPD package
+		echo -e "${YELLOW}[+] Install VSFTPD package...${NC}"
+		yum install -y vsftpd
+		echo
+	#Config Firewalld to add FTP service
+		echo -e "${YELLOW}[+] Add ${BLUE}FTP ${YELLOW}service from Firewalld... ${NC}"
+		firewall-cmd --zone=public --permanent --add-service=ftp
+		firewall-cmd --reload
+		echo
+	#Create a rule for firewall to allow FTP traffic on Port 21
+		echo -e "${YELLOW}[+] Enable Port ${BLUE}21${YELLOW}.... ${NC}"
+		firewall-cmd --zone=public --permanent --add-port=21/tcp
+		firewall-cmd --reload
+		echo
+	#Check the FTP service and port was added
+		echo -e "${YELLOW}[+] Check lists enabled.... ${NC}"
+		firewall-cmd --list-services | grep "ftp"
+		firewall-cmd --list-ports | grep "21"
+		echo
+	#Create backup vsftpd.conf file (.bk)
+		echo -e "${YELLOW}[+] Create backup ${BLUE}vsftpd.conf ${YELLOW}file.... ${NC}"
+		cp -a /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bk
+		echo
+	#Create Uploads Folder
+		echo -e "${YELLOW}[+] The FTP Server uses the directory (/var/ftp) as the default document root.${NC}"
+		echo -e "${YELLOW}    Create a subdirectory with the name ${BLUE}'uploads' (/var/ftp/uploads).${NC}"
+		rm -rf /var/ftp/uploads; mkdir /var/ftp/uploads
+		echo
+	#Give permissions for Shared Folder | -rwx-wx---
+		echo -e "${YELLOW}[+] Set permission (Users can write, but they can't read them). ${NC}"
+		chmod 0730 /var/ftp/uploads
+		echo
+	#Set the group owner to group FTP
+		chgrp ftp /var/ftp/uploads
+		echo -e "${YELLOW}[+] Set the group owner to ${BLUE}'FTP' ${NC}"
+		echo
+	#Edit file vsftpd.conf
+		echo "#Set up FTP Anonymous Drop Box
+			anon_umask=077
+			anon_upload_enable=YES
+			anon_mkdir_write_enable=YES
+			chown_uploads=YES
+			chown_username=root" >> /etc/vsftpd/vsftpd.conf
+	#Restart VSFTPD service
+		echo -e "${YELLOW}[+] VSFTPD service status:${NC}"
+		echo
+		systemctl enable vsftpd; systemctl start vsftpd; systemctl restart vsftpd; systemctl status vsftpd
+	#Config Semanage
+		semanage fcontext -a -t public_content_rw_t "/var/ftp/uploads(/.*)?"
+		restorecon -Rv /var/ftp/uploads
+	#Enable ftpd_anon_write
+		setsebool -P ftpd_anon_write on
+		echo
+		echo -e "$PAKTC"
+		read $READAK
+		clear
+	#Test the result
+		f_banner
+		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
+		echo
+		echo -e "${YELLOW}	[+] Step 1: Log-in another server and type:${BLUE} yum install -y lftp.${NC}"
+		echo -e "${YELLOW}	[+] Step 2: Then type lftp ${BLUE}(FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10.${NC}"
+		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls.${NC}"
+		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts.${NC}"
+		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ll /var/ftp/uploads/.${NC}"
+		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts).${NC}"
+		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, uninstall VSFTPD and try again)${NC}"
+		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog.${NC}"
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -341,6 +431,8 @@ f_search() {
 	#Identified Application	
 		echo -e -n "${YELLOW}Input your Application: ${NC}"
 		read application
+	#Check Application installed or not yet
+		rpm -qa | grep "$application"
 	#Check for no answer
 		if [[ -z $application ]]; then
 			f_error
@@ -392,14 +484,6 @@ f_checkinternet() {
 
 ##############################################################################################################
 
-#Exercise 9: Install and config FTP server
-f_ftpserver() {
-		clear
-		f_banner
-		
-	}
-##############################################################################################################
-
 #Building Menu:
 f_main(){
 	clear
@@ -413,9 +497,9 @@ f_main(){
                 echo -e          "4.  Create New User                 13.  Create Basic Shell              93.  Exit"
                 echo -e          "5.  Config Timedate                 14.  "
                 echo -e          "6.  Create New LVM                  15.  "
-                echo -e          "7.  Open Services                   16.  "
+                echo -e          "7.  Enable Services (Firewalld)     16.  "
                 echo -e          "8.  Create Web Server               17.  "
-                echo -e          "9.  Config FTP Server               18.  "${NC}
+                echo -e          "9.  Create FTP Anonymous Drop Box   18.  "${NC}
                 echo
 				
 	echo -e -n "${BLUE}Your Choice: "${NC}
@@ -430,7 +514,7 @@ f_main(){
 		6) f_newlvm;;
 		7) f_openservice;;
 		8) f_webserver;;
-		9) f_ftpserver;;
+		9) f_anon_dropbox;;
 		10) f_apache;;
 		11) f_dns_unbound;;
 		12) f_dns_bind;;
