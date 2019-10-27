@@ -66,20 +66,21 @@ f_error() {
 #Exercise 1: Setup Static IP 
 f_setip () {
 		clear
-		f_banner
-	#Get data from user (IP - Gateway - DNS)	
-        echo -e -n "${YELLOW}Static IP: ${NC}"   
+	#Get data from user (IP - Gateway - DNS)
+		echo -e "${BLUE} Input IP information: ${NC}"
+		echo
+        echo -e -n "${YELLOW}   [+] Static IP: ${NC}"   
             read staticip
-        echo -e -n "${YELLOW}Gateway  : ${NC}"
+        echo -e -n "${YELLOW}   [+] Gateway  : ${NC}"
 			read gateway
-		echo -e -n "${YELLOW}DNS-1    : ${NC}"
+		echo -e -n "${YELLOW}   [+] DNS-1    : ${NC}"
 			read dns1
-		echo -e -n "${YELLOW}DNS-2    : ${NC}"
+		echo -e -n "${YELLOW}   [+] DNS-2    : ${NC}"
 			read dns2
 			echo
 	#Confirm data from user
 		f_confirmdata() {	
-			echo -e -n "${YELLOW}Please confirm again (YES/NO): ${NC}"
+			echo -e -n "${YELLOW}Please confirm again [YES/NO]: ${NC}"
 				read confirmdata
 				echo
 			case $confirmdata in
@@ -101,31 +102,33 @@ f_setip () {
 					ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
 
 					clear
-					echo -e "${YELLOW}Backing up & Assigning the Static IP ...$NC"
+					echo -e "${YELLOW}${BLINK}Backing up & Assigning the Static IP ...$NC"
 					echo
 			#Restart network services
 					systemctl restart network.service
 					ifconfig ens33
 					cat /etc/resolv.conf
-					echo
 					clear
 			#Check ping
-					echo -e -n "${YELLOW}CHECKING...${NC}"
+					echo -e -n "${RED}${BLINK}CHECKING...${NC}"
+						echo
 						echo
 						if ping -q -c 1 -W 1 google.com >/dev/null; then
 							echo
 							clear
 							echo
-							echo -e "${YELLOW}Alright, Your IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
+							echo -e "${YELLOW}Alright, Your Local IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
 							echo
 							else
+							clear
+							echo -e "${RED}FAILED!!!${NC}"
 							echo
-							echo -e "${YELLOW}Please check your network connection and try again...${NC}"
+							echo -e "${YELLOW}Please check your network connection and try again.${NC}"
 							echo
 							fi
 								;;
 				no|No|NO|n|N)
-					echo -e "${YELLOW}Alright, slow down. Let's try again!${NC}"
+					echo -e "${BLUE}Alright, slow down. Let's try again!${NC}"
 					sleep 2
 					f_setip
 					;;
@@ -150,6 +153,7 @@ f_setip () {
 			}
 			f_confirmdata
 			echo
+			echo
 			echo -e "$PAKTGB"
 			echo
 			read $READAK
@@ -160,10 +164,13 @@ f_setip () {
 #Exercise 2: Connect Putty on Windows
 f_putty() {
 		clear
-		f_banner
-		echo -e "${BLUE}   Step 1: ${YELLOW}Download ${BLUE}(https://www.putty.org)${YELLOW}, use key combination (Windows + R) and type: putty.${NC}"
-		echo -e "${BLUE}   Step 2: ${YELLOW}Input the target IP (SSH) and click Open.${NC}"
-		echo -e "${BLUE}   Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account.${NC}"
+		echo
+		echo -e "${YELLOW}  Follow the instructions below to connect to Linux Server (SSH) in Windows Environment via PuTTY:${NC}"
+		echo
+		echo -e "${BLUE} [+] Step 1: ${YELLOW}Download PuTTY${BLUE}(https://www.putty.org)${YELLOW}, use key combination (Windows + R) and type: ${BLUE}putty${YELLOW}.${NC}"
+		echo -e "${BLUE} [+] Step 2: ${YELLOW}Input the target IP (SSH) and click Open.${NC}"
+		echo -e "${BLUE} [+] Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account.${NC}"
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -174,7 +181,7 @@ f_putty() {
 #Exercise 3: Config Hostname
 f_hostname() {
 		clear
-		f_banner
+		echo
 		echo -e -n "${YELLOW}Input new hostname: ${NC}"
 		read hostname
 		hostnamectl set-hostname $hostname
@@ -182,6 +189,7 @@ f_hostname() {
 		echo -e "${YELLOW}Here is your new hostname: ${NC}"
 		echo
 		hostname
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -192,30 +200,38 @@ f_hostname() {
 #Exercise 4: Create New User and add sudo
 f_newuser() {
 		clear
-		f_banner
 	#Single User
-		echo -e -n "${YELLOW}Enter Fullname: ${NC}"
+		echo
+		echo -e "${BLUE} Input New User Information: ${NC}"
+		echo
+		echo -e -n "${YELLOW}   [+] Enter Fullname: ${NC}"
 		read fullname
-		echo -e -n "${YELLOW}Enter Username: ${NC}"
+		echo -e -n "${YELLOW}   [+] Enter Username: ${NC}"
 		read username
-		echo -e -n "${YELLOW}New Password: ${NC}"
+		echo -e -n "${YELLOW}   [+] New Password  : ${NC}"
 		read password
 		useradd -m $username -c "$fullname"
 		echo "$username:$password" | chpasswd
+		echo
 		echo
 		echo -e "$PAKTC"
 		read $READAK		
 		clear
 	#Ask for sudoer privilege
 		f_answersudo () {
-			echo -e -n "${YELLOW}Can ${BLUE}'$username'${YELLOW} uses sudo (YES/NO)? ${NC}"
+			echo
+			echo -e -n "${YELLOW}Do you want to add user ${BLUE}'$username'${YELLOW} to group sudoers(wheel)? [YES/NO]: ${NC}"
 				read answersudo
+				echo
+				clear
 				echo
 			case $answersudo in
 				yes|Yes|YES|y|Y)
+					echo -e "${YELLOW}Here is user ${BLUE}'$username'${YELLOW} information details: ${NC}"
+					echo
 					usermod -aG wheel $username; id $username; grep "$username" /etc/passwd
 					echo
-					echo -e "${YELLOW}Welldone, added user ${BLUE}'$username'${YELLOW} to group wheel(sudo) successfully!${NC}"
+					echo -e "${YELLOW}Welldone, added user ${BLUE}'$username'${YELLOW} to group sudoers(wheel) successfully!${NC}"
 					;;
 				no|No|NO|n|N)
 					echo -e "${YELLOW}Welldone, created user ${BLUE}'$username'${YELLOW} successfully!${NC}"
@@ -233,6 +249,7 @@ f_newuser() {
 			f_answersudo
 	#Multi Users
 			echo
+			echo
 			echo -e "$PAKTGB"
 			read $READAK
 	}
@@ -242,10 +259,10 @@ f_newuser() {
 #Exercise 5: Config Timedate
 f_timedate() {
 		clear
-		f_banner
+		echo
 		echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): ${NC}"
 		read date
-		echo -e -n "${YELLOW}Input Time (Example: 19:30:50): ${NC}"
+		echo -e -n "${YELLOW}Input Time (Example: 19:30:50)  : ${NC}"
 		read time
 		timedatectl set-ntp false
 		timedatectl set-local-rtc 0
@@ -253,9 +270,11 @@ f_timedate() {
 		timedatectl set-time $time
 		timedatectl set-timezone Asia/Ho_Chi_Minh
 		clear
+		echo
 		echo -e "${YELLOW}Here is your new time & date status: ${NC}"
 		echo
 		date
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -266,12 +285,12 @@ f_timedate() {
 #Exercise 6: Create new Logical Volume Management (LVM)	
 f_newlvm() {
 		clear
-		f_banner
+		echo
 		echo -e "${BLUE}Your disk information:${NC}"
 		echo
 		fdisk -l | grep "/dev/s" #Check disk device information
 		echo
-		echo -e -n "${YELLOW}Make sure you was added ${BLUE}a new Hard Disk ${YELLOW}and located it done (fdisk -l). ${NC}"
+		echo -e "${YELLOW}*Make sure you was added ${BLUE}a new Hard Disk ${YELLOW}and located it done (fdisk -l). ${NC}"
 		echo
 		echo -e -n "${YELLOW}Enter disk name (Example: sdb): ${NC}"
 		read newdisk
@@ -289,21 +308,27 @@ f_newlvm() {
 		w" | fdisk /dev/$newdisk
 	#Show partition
 		clear
+		echo
+		echo -e "${YELLOW}Here is the disk ${BLUE}(/dev/$newdisk)${YELLOW} partitions details:${NC}"
+		echo
 		fdisk -l | grep "/dev/$newdisk"
 		echo
 	#Identified the new disk info
-		echo -e -n "${YELLOW}Enter the disk detail just created (Example: sdb1): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the disk partition to create LVM (Example: ${BLUE}sdb1${YELLOW}): ${NC}"
 		read diskinfo
 	#Create Physical Volume
 		pvcreate /dev/$diskinfo
+		echo
 	#Create Volume Group
-		echo -e -n "${YELLOW}Enter volume group name (Example: VGDATA): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the volume group name (Example: ${BLUE}VGDATA${YELLOW}): ${NC}"
 		read vgdata
 		vgcreate $vgdata /dev/$diskinfo
+		echo
 	#Create Logical Volume
-		echo -e -n "${YELLOW}Enter logical volume name (Example: LVDATA): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the logical volume name (Example: ${BLUE}LVDATA${YELLOW}): ${NC}"
 		read lvdata
-		echo -e -n "${YELLOW}Enter logical volume space (Example: 25%,50%,...): ${NC}"
+		echo
+		echo -e -n "${YELLOW}[+] Input the logical volume space (Example: ${BLUE}25%,50%,...${YELLOW}): ${NC}"
 		read lvspace
 		lvcreate -n $lvdata -l ${lvspace}FREE $vgdata
 	#Config after
@@ -312,7 +337,12 @@ f_newlvm() {
 		echo "/dev/$vgdata/$lvdata /files xfs defaults 1 2" >> /etc/fstab
 		mount -a
 		clear
-		df -h /dev/mapper/$vgdata-$lvdata #Check data correctly
+		echo
+		echo -e "${YELLOW}Here is the new Logical Volume Managent (LVM) information: ${NC}"
+		echo
+	#Check data correctly
+		df -h /dev/mapper/$vgdata-$lvdata
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -323,17 +353,19 @@ f_newlvm() {
 #Exercise 7: Config firewalld to allow user access to server through protocols (http,ftp,...)
 f_openservice() {
 		clear
-		f_banner
 	#Check install Firewalld
-		echo -e "${YELLOW}[+] Install Firewalld... ${NC}"
-		yum install -y firewalld
+		echo
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Firewalld${YELLOW}... ${NC}"
+		yum install -y -q firewalld
 		clear
 	#Add single service
-		echo -e -n "${YELLOW}Enter service (Example: http,ftp,dns,...): ${NC}"
+		echo
+		echo -e -n "${YELLOW}Input service to enable (Example: ${BLUE}'http' ${YELLOW}or ${BLUE}'ftp'${YELLOW}): ${NC}"
 		read service
 		firewall-cmd --add-service=$service --permanent; firewall-cmd --reload
 	#Restart firewalld
 		clear
+		echo
 		echo -e "${YELLOW}Firewalld.service status:${NC}"
 		echo		
 		systemctl enable firewalld; systemctl restart firewalld; systemctl status firewalld;
@@ -342,6 +374,7 @@ f_openservice() {
 		echo -e "${YELLOW}Lists your current services running:${NC}"
 		echo
 		firewall-cmd --list-services; firewall-cmd --list-ports
+		echo
 		echo -e "$PAKTGB"
 		read $READAK
 	}
@@ -351,22 +384,20 @@ f_openservice() {
 #Exercise 8: Install and config Basic Web Server
 f_webserver() {
 		clear
-		f_banner
 	#Check the Internet
 		
 	#Install Basic Web Server & Elinks package
-		echo -e "${YELLOW}[+] Install "Basic Web Server" and elinks...${NC}"
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}"Basic Web Server"${YELLOW} and ${BLUE}Elinks${YELLOW}...${NC}"
+		echo
 		yum groupinstall -y "Basic Web Server"
-		yum install -y elinks
-	#Backup file httpd.conf
+		yum install -y -q elinks
 		clear
-		echo -e "${YELLOW}Backing up file httpd.conf... ${NC}"
+	#Backup file httpd.conf && Create Basic Index.html
+		echo
+		echo -e "${YELLOW}Back up file httpd.conf & Create Index.html ${BLUE}(/var/www/html/index.html)${YELLOW}.${NC}"
 		cp -a /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bk
 		echo
-	#Create Basic Index.html
-		echo -e "${YELLOW}Creating Index.html... ${NC}"
-		echo
-		echo -e -n "${YELLOW}Input data to index file (Example: Hello World!): ${NC}"
+		echo -e -n "${YELLOW}Input data to index file (Example: ${BLUE}Hello World!${YELLOW}): ${NC}"
 		read web_data
 		echo "$web_data" > /var/www/html/index.html
 	#Restart httpd service
@@ -377,6 +408,7 @@ f_webserver() {
 		echo -e "${YELLOW}+ Open new tab and type: ${BLUE}elinks http://localhost. ${NC}"
 		echo -e "${YELLOW}+ Open Web Browser and redirect to: ${BLUE}http://localhost. ${NC}"
 		echo
+		echo
 		echo -e "$PAKTGB"
 		read $READAK
 	}
@@ -386,33 +418,35 @@ f_webserver() {
 #Exercise 9: Install and config FTP Anonymous Drop Box with a shared folder.
 f_anon_dropbox() {
 		clear
-		f_banner
 	#Install VSFTPD package
-		echo -e "${YELLOW}[+] Install VSFTPD package...${NC}"
-		yum install -y vsftpd
 		echo
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}VSFTPD${YELLOW}...${NC}"
+		yum install -y -q vsftpd
+		echo
+		clear
 	#Config Firewalld to add FTP service
-		echo -e "${YELLOW}[+] Add ${BLUE}FTP ${YELLOW}service from Firewalld... ${NC}"
+		echo
+		echo -e "${YELLOW}[+] Add ${BLUE}FTP ${YELLOW}service from Firewalld.${NC}"
 		firewall-cmd --zone=public --permanent --add-service=ftp
 		firewall-cmd --reload
 		echo
 	#Create a rule for firewall to allow FTP traffic on Port 21
-		echo -e "${YELLOW}[+] Enable Port ${BLUE}21${YELLOW}.... ${NC}"
+		echo -e "${YELLOW}[+] Enable Port ${BLUE}21${YELLOW}.${NC}"
 		firewall-cmd --zone=public --permanent --add-port=21/tcp
 		firewall-cmd --reload
 		echo
 	#Check the FTP service and port was added
-		echo -e "${YELLOW}[+] Check lists enabled.... ${NC}"
+		echo -e "${YELLOW}[+] Check lists current services running.${NC}"
 		firewall-cmd --list-services | grep "ftp"
 		firewall-cmd --list-ports | grep "21"
 		echo
 	#Create backup vsftpd.conf file (.bk)
-		echo -e "${YELLOW}[+] Create backup ${BLUE}vsftpd.conf ${YELLOW}file.... ${NC}"
+		echo -e "${YELLOW}[+] Create backup ${BLUE}vsftpd.conf ${YELLOW}file.${NC}"
 		cp -a /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bk
 		echo
 	#Create Uploads Folder
 		echo -e "${YELLOW}[+] The FTP Server uses the directory (/var/ftp) as the default document root.${NC}"
-		echo -e "${YELLOW}    Create a subdirectory with the name ${BLUE}'uploads' (/var/ftp/uploads).${NC}"
+		echo -e "${YELLOW}    Create a sub-directory with the name ${BLUE}'uploads' ${YELLOW}(/var/ftp/uploads).${NC}"
 		rm -rf /var/ftp/uploads; mkdir /var/ftp/uploads
 		echo
 	#Give permissions for Shared Folder | -rwx-wx---
@@ -421,7 +455,7 @@ f_anon_dropbox() {
 		echo
 	#Set the group owner to group FTP
 		chgrp ftp /var/ftp/uploads
-		echo -e "${YELLOW}[+] Set the group owner to ${BLUE}'FTP' ${NC}"
+		echo -e "${YELLOW}[+] Set the group owner to ${BLUE}'FTP'${YELLOW}. ${NC}"
 		echo
 	#Edit file vsftpd.conf
 		echo "#Set up FTP Anonymous Drop Box
@@ -440,21 +474,23 @@ f_anon_dropbox() {
 	#Enable ftpd_anon_write
 		setsebool -P ftpd_anon_write on
 		echo
+		echo
 		echo -e "$PAKTC"
 		read $READAK
 		clear
 	#Test the result
-		f_banner
+		echo
 		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
 		echo
-		echo -e "${YELLOW}	[+] Step 1: Log-in another server and type:${BLUE} yum install -y lftp.${NC}"
-		echo -e "${YELLOW}	[+] Step 2: Then type lftp ${BLUE}(FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10.${NC}"
-		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls.${NC}"
-		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts.${NC}"
-		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ll /var/ftp/uploads/.${NC}"
-		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts).${NC}"
-		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, uninstall VSFTPD and try again)${NC}"
-		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog.${NC}"
+		echo -e "${YELLOW}	[+] Step 1: Log-in another server and type:${BLUE} yum install -y lftp${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 2: Then type: ${BLUE}lftp (FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10.${NC}"
+		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ll /var/ftp/uploads/${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts)${YELLOW}.${NC}"
+		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, un-install VSFTPD and try again)${NC}"
+		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog${YELLOW}.${NC}"
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -476,9 +512,7 @@ f_search() {
 			f_error
 			echo -e "${YELLOW}Please input correctly what you need to find.${NC}"
 			exit 0
-		fi
-		echo 
-		rpm -qa | grep $application
+		fi 
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
