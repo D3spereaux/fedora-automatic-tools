@@ -124,6 +124,8 @@ f_setip () {
 							echo
 							echo -e "${RED}FAILED!!!${NC}"
 							echo
+							mv /etc/sysconfig/network-scripts/ifcfg-ens33.bk /etc/sysconfig/network-scripts/ifcfg-ens33
+							echo
 							echo -e "${YELLOW}Please check your network connection and try again.${NC}"
 							fi
 								;;
@@ -500,14 +502,34 @@ f_anon_dropbox() {
 		echo -e "$PAKTGB"
 		read $READAK
 	}
-	
+
+##############################################################################################################
+
+#Exercise 10: Managing Apache Services
+f_apache() {
+		clear
+		echo
+	#Get IP web server
+		echo -e -n "${YELLOW}[+] Input your IP: ${NC}"
+		read webserverip
+	#Enable SELinux to Permissive (0)
+		setenforce 0
+	#Backup file /etc/hosts
+		echo
+		echo -e "${YELLOW}[+] Backup and edit file hosts (/etc/hosts).${NC}"
+		cp -a /etc/hosts /etc/hosts.bk
+		echo "
+		$webserverip server1.example.com server1
+		$webserverip account.example.com account
+		$webserverip sales.example.com sales" >> /etc/hosts
+		clear
 ##############################################################################################################
 
 #Searching Software/Application
 f_search() {
 		clear
-		f_banner
 	#Identified Application	
+		yum install -y -q dnf
 		echo -e -n "${YELLOW}Input your Application: ${NC}"
 		read application
 	#Check Application installed or not yet
