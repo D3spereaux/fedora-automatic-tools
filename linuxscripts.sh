@@ -14,7 +14,7 @@
 		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue...${NC}"
 		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back...${NC}"
 #Code to read from keyboard without return
-		READAK="read -n 1"
+		READAK="read -s -n 1"
 		
 #########################################################4####################################################
 
@@ -102,14 +102,15 @@ f_setip () {
 					ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
 
 					clear
-					echo -e "${YELLOW}${BLINK}Backing up & Assigning the Static IP ...$NC"
 					echo
+					echo -e "${YELLOW}${BLINK}Backing up & Assigning the Static IP ...$NC"
 			#Restart network services
 					systemctl restart network.service
 					ifconfig ens33
 					cat /etc/resolv.conf
 					clear
 			#Check ping
+					echo
 					echo -e -n "${RED}${BLINK}CHECKING...${NC}"
 						echo
 						echo
@@ -118,13 +119,12 @@ f_setip () {
 							clear
 							echo
 							echo -e "${YELLOW}Alright, Your Local IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
-							echo
 							else
 							clear
+							echo
 							echo -e "${RED}FAILED!!!${NC}"
 							echo
 							echo -e "${YELLOW}Please check your network connection and try again.${NC}"
-							echo
 							fi
 								;;
 				no|No|NO|n|N)
@@ -186,6 +186,7 @@ f_hostname() {
 		read hostname
 		hostnamectl set-hostname $hostname
 		clear
+		echo
 		echo -e "${YELLOW}Here is your new hostname: ${NC}"
 		echo
 		hostname
@@ -356,7 +357,9 @@ f_openservice() {
 	#Check install Firewalld
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Firewalld${YELLOW}... ${NC}"
-		yum install -y -q firewalld
+		echo
+		yum install -y -q dnf
+		dnf install -y -q firewalld; dnf update -y -q firewalld
 		clear
 	#Add single service
 		echo
@@ -384,13 +387,13 @@ f_openservice() {
 #Exercise 8: Install and config Basic Web Server
 f_webserver() {
 		clear
-	#Check the Internet
-		
 	#Install Basic Web Server & Elinks package
+		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}"Basic Web Server"${YELLOW} and ${BLUE}Elinks${YELLOW}...${NC}"
 		echo
-		yum groupinstall -y "Basic Web Server"
-		yum install -y -q elinks
+		yum install -y -q dnf
+		dnf groupinstall -y -q "Basic Web Server";dnf groupupdate -y -q "Basic Web Server"
+		dnf install -y -q elinks; dnf update -y -q elinks
 		clear
 	#Backup file httpd.conf && Create Basic Index.html
 		echo
@@ -421,7 +424,9 @@ f_anon_dropbox() {
 	#Install VSFTPD package
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}VSFTPD${YELLOW}...${NC}"
-		yum install -y -q vsftpd
+		echo
+		yum install -y -q dnf
+		dnf install -y -q vsftpd; dnf update -y -q vsftpd
 		echo
 		clear
 	#Config Firewalld to add FTP service
@@ -523,7 +528,7 @@ f_search() {
 #Check the Internect connecting
 f_checkinternet() {
 		clear
-		f_banner
+		echo
 		echo -e -n "${YELLOW}Checking the network connection, please wait... ${NC}"
 		if ping -q -c 1 -W 1 google.com >/dev/null; then
 		echo
@@ -531,24 +536,29 @@ f_checkinternet() {
 		clear
 		local_ip=$(ifconfig | grep -w inet | awk '{print $2}')	
 		echo
-		echo -e -n "${YELLOW}Local IP:${NC}"
+		echo -e "${YELLOW}Here is your IP information details: ${NC}"
+		echo
+		echo -e -n "${YELLOW}[+] Local IP:${NC}"
 		echo
 		echo -e "${BLUE}$local_ip${NC}"
 		echo
 	#Check Gateway
 		gateway=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
-		echo -e -n "${YELLOW}Gateway: ${BLUE}$gateway${NC}"
-		echo
+		echo -e -n "${YELLOW}[+] Gateway: ${BLUE}$gateway${NC}"
 		echo
 	#Check Public IP
+		echo
 		public_ip=$(wget -qO - https://api.ipify.org)
-		echo -e -n "${YELLOW}Public IP: ${BLUE}$public_ip${NC}"
+		echo -e -n "${YELLOW}[+] Public IP: ${BLUE}$public_ip${NC}"
 		echo
 		else
 			clear
 			echo
+			echo -e "${RED}FAILED!!! ${NC}"
+			echo
 			echo -e "${YELLOW}Please check your network connection and try again...${NC}"
 		fi
+		echo
 		echo
 		echo -e "$PAKTGB"
 		read $READAK
@@ -561,7 +571,7 @@ f_main(){
 	clear
 	f_banner
 	#Main Menu:
-                echo -e "${BLUE}  EXERCISES LINUX 1${NC}                    ${BLUE}EXERCISES LINUX 2${NC}                    ${BLUE}OTHERS${NC}"
+                echo -e "${BLUE}       BASICS${NC}                                 ${BLUE}ADVANCED${NC}                          ${BLUE}OTHERS${NC}"
                 echo
                 echo -e "${YELLOW}1.  Config IP                       10.  Manage Apache Services          90.  Update CentOS"
                 echo -e          "2.  Connect Putty                   11.  Config DNS (Unbound)            91.  Search Software"
