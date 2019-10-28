@@ -23,8 +23,9 @@ USAGE:
 
 - git clone https://github.com/Despereaux222/linuxscripts.git
 
-3. Give Permission to Execute:
+3. Go to the folder just downloaded & give permission file bash to Execute:
 
+- cd fedora-automatic-tools
 - chmod +x linuxscripts.sh
 
 4. Run and enjoy the automation:
