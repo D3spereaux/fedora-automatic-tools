@@ -15,14 +15,18 @@ This tools will help the beginner - student - collegue - expert learning LPIC & 
 USAGE:
 ------
 
-1. Download LinuxScripts:
+1. Install GIT Package on your Fedora distro:
+
+- yum install -y git
+
+2. Download LinuxScripts:
 
 - git clone https://github.com/Despereaux222/linuxscripts.git
 
-2. Give Permission to Execute:
+3. Give Permission to Execute:
 
 - chmod +x linuxscripts.sh
 
-3. Run and enjoy the automation:
+4. Run and enjoy the automation:
 
 - ./linuxscripts.sh
