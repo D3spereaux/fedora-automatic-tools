@@ -30,4 +30,4 @@ USAGE:
 
 4. Run and enjoy the automation:
 
-- ./linuxscripts.sh
+- ./menu1.sh
