@@ -21,7 +21,7 @@ USAGE:
 
 2. Download LinuxScripts:
 
-- git clone https://github.com/Despereaux222/linuxscripts.git
+- git clone https://github.com/Despereaux222/fedora-automatic-tools.git
 
 3. Go to the folder just downloaded & give permission file bash to Execute:
 
