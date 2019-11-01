@@ -377,7 +377,8 @@ f_openservice() {
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Firewalld${YELLOW}... ${NC}"
 		echo
-		yum install -y -q firewalld; yum update -y -q firewalld
+	#Force stop YUM
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q firewalld; yum update -y -q firewalld
 		clear
 	#Add single service
 		echo
@@ -409,6 +410,7 @@ f_webserver() {
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}"Basic Web Server"${YELLOW} and ${BLUE}Elinks${YELLOW}...${NC}"
 		echo
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q dnf; yum update -y -q dnf
 		dnf groupinstall -y -q "Basic Web Server";dnf groupupdate -y -q "Basic Web Server"
 		yum install -y -q elinks; yum update -y -q elinks
 		clear
@@ -442,7 +444,7 @@ f_anon_dropbox() {
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}VSFTPD${YELLOW}...${NC}"
 		echo
-		yum install -y -q vsftpd; yum update -y -q vsftpd
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q vsftpd; yum update -y -q vsftpd
 		echo
 		clear
 	#Config Firewalld to add FTP service
@@ -503,11 +505,11 @@ f_anon_dropbox() {
 		echo
 		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
 		echo
-		echo -e "${YELLOW}	[+] Step 1: Log-in another server and type:${BLUE} yum install -y lftp${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 1: Log-in another server and type:${BLUE} kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y lftp${YELLOW}.${NC}"
 		echo -e "${YELLOW}	[+] Step 2: Then type: ${BLUE}lftp (FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10.${NC}"
 		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls${YELLOW}.${NC}"
 		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ll /var/ftp/uploads/${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ls -l /var/ftp/uploads/${YELLOW}.${NC}"
 		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts)${YELLOW}.${NC}"
 		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, un-install VSFTPD and try again)${NC}"
 		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog${YELLOW}.${NC}"
@@ -615,7 +617,7 @@ f_apache() {
 		clear
 	#Restart service httpd
 		echo -e "${YELLOW}${BLINK} [+] Restarting HTTPD service... ${NC}"
-		yum install -y -q httpd-manual; yum update -y -q httpd-manual
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q httpd-manual; yum update -y -q httpd-manual
 		systemctl restart httpd; systemctl enable httpd
 		clear
 	#Open HTTPD Manual
@@ -663,7 +665,7 @@ f_dns_unbound() {
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Unbound${YELLOW}... ${NC}"
 		echo
-		yum install -y -q unbound; yum update -y -q unbound
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q unbound; yum update -y -q unbound
 		systemctl enable unbound; systemctl start unbound
 		clear
 	#Backup and edit unbound.conf
@@ -719,6 +721,410 @@ f_dns_unbound() {
 		echo -e "$PAKTGB"
 		$READAK
 	}
+	
+##############################################################################################################
+
+#Exercise 12: Install BIND and DNS packages
+f_dns_bind() {
+		clear
+		echo
+		echo -e "${YELLOW} [*] Choose your current running server:"${NC}
+		echo
+	#Choose between 2 server (Primary and Secondary)
+		select bind_server in Server1 Server2
+		do
+		case $bind_server in
+			"Server1")
+				clear
+				echo
+				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
+				echo
+				kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; 
+				yum remove unbound -y -q; yum remove bind -y -q
+				clear
+			#Install BIND packages
+				echo
+				echo -e "${YELLOW}${BLINK} [+] Installing Bind service..." ${NC}
+				echo
+				yum install -y -q bind bind-utils; yum update -y -q bind bind-utils
+				clear
+				echo
+				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. ${NC}"
+				echo
+				cp -a /etc/named.conf /etc.named.conf.bk
+			#Get IP from user
+				clear
+				echo
+				echo -e -n "${YELLOW} [+] Input Server 1 IP: ${NC}"
+				read bind_server1_ip
+				echo -e -n "${YELLOW} [+] Input Server 2 IP: ${NC}"
+				read bind_server2_ip
+				echo -e -n "${YELLOW} [+] Input Domain Name Server 1 (Example: ${BLUE}fptjetking1${YELLOW}): ${NC}"
+				read bind_domain_1
+				echo -e -n "${YELLOW} [+] Input Domain Name Server 2 (Example: ${BLUE}fptjetking2${YELLOW}): ${NC}"
+				read bind_domain_2
+				reverse_ip=$(echo "$bind_server1_ip" | awk -F. -vOFS=. '{print $3,$2,$1,"in-addr.arpa"}')
+				clear
+			#Changing named.conf
+				sed -i 's|127.0.0.1|any|' /etc/named.conf
+				sed -i 's|listen-on-v6|#listen-on-v6|' /etc/named.conf
+				sed -i "s|localhost; };|any; }; allow-transfer { ${bind_server2_ip}; };|" /etc/named.conf
+	#Add Zone to /etc/named.conf
+echo "#A (Forward) Zone Statement for your domain
+zone \"example.com\" IN {
+type master;
+file \"example.com.zone\";
+};
+
+#A (Forward) Zone Statement for your domain
+zone \"${reverse_ip}\" IN {
+type master;
+file \"example.com.rr.zone\";
+allow-update { none; };
+};" >> /etc/named.conf
+	#Add data to Forward Zone
+echo "\$ORIGIN example.com.
+\$TTL 86400
+@ IN SOA ${bind_domain_1}.example.com. hostmaster.example.com. (
+2001062501 ; serial
+21600 ; refresh after 6 hours
+3600 ; retry after 1 hour
+604800 ; expire after 1 week
+86400 ) ; minimum TTL of 1 day
+;
+;
+@ IN NS ${bind_domain_1}.example.com.
+@ IN NS ${bind_domain_2}.example.com.
+
+${bind_domain_1} IN A ${bind_server1_ip}
+${bind_domain_2} IN A ${bind_server2_ip}
+;
+;
+@ IN MX 10 mail.example.com.
+IN MX 20 mail2.example.com.
+mail IN A 192.168.15.251
+mail2 IN A 192.168.15.252
+;
+;
+; This sample zone file illustrates sharing the same IP addresses
+; for multiple services:
+;
+services IN A 192.168.15.100
+IN A 192.168.15.201
+ftp IN CNAME services.example.com.
+www IN CNAME services.example.com.
+;
+;" > /var/named/example.com.zone
+	#Add data to Reverse Name
+echo "\$ORIGIN ${reverse_ip}.
+\$TTL 86400
+@ IN SOA ${bind_domain_1}.example.com. hostmaster.example.com. (
+2001062501 ; serial
+21600 ; refresh after 6 hours
+3600 ; retry after 1 hour
+04800 ; expire after 1 week
+86400 ) ; minimum TTL of 1 day
+;
+@ IN NS ${bind_domain_1}.example.com.
+@ IN NS ${bind_domain_2}.example.com.
+;
+100 IN PTR ${bind_domain_1}.example.com.
+200 IN PTR ${bind_domain_2}.example.com.
+;
+251 IN PTR mail.${bind_domain_1}.example.com.
+252 IN PTR mail2.${bind_domain_1}.example.com.
+;
+201 IN PTR ftp.${bind_domain_1}.example.com.
+202 IN PTR www.${bind_domain_1}.example.com." > /var/named/example.com.rr.zone 
+			#Checks the syntax of named.conf:
+				named-checkconf /etc/named.conf
+				echo
+			#Checks the syntax and integrity of a zone file:
+				named-checkzone example.com /var/named/example.com.zone;
+				named-checkzone ${reverse_ip} /var/named/example.com.rr.zone
+				echo
+				clear
+			#Enable Named service:
+				echo -e "${YELLOW} [+] Named service status:"${NC}
+				echo
+				systemctl enable named; systemctl restart named; systemctl status named
+				echo
+			#Add DNS service:
+				echo -e "${YELLOW}Lists your current services running:${NC}"
+				echo
+				firewall-cmd --add-service=dns --permanent; firewall-cmd --reload; firewall-cmd --list-services
+				echo
+				echo
+				echo -e "$PAKTC"
+				$READAK
+			#Ask user to block website
+				clear
+			f_blockweb(){	
+				echo
+				echo -e -n "${YELLOW} [+] Do you want to block access to a website? [YES/NO]: "${NC}
+				read ask_block_website
+				echo
+				clear
+				echo
+				case $ask_block_website in
+					yes|Yes|YES|y|Y)
+						echo -e -n "${YELLOW} [+] Input a website name: "${NC}
+						read website_block
+						echo "
+						zone \"$website_block\" IN {
+							type master;
+							file \"deny_list\";
+						};" >> /etc/named.conf
+					#Create Backup deny_list
+						cp -a /var/named/named.localhost /var/named/deny_list
+						systemctl restart named
+						clear
+						echo
+						echo -e "${YELLOW} [+] Blocked Website: $website_block successfully!"
+						echo -e "${YELLOW} [*] On another server, type:${BLUE} nslookup $website_block to verify."${NC}
+						echo
+						echo
+						echo -e "$PAKTC"
+						$READAK
+						;;
+					no|No|NO|n|N)
+						echo
+						;;
+					*)
+						echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+							echo
+							echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+							sleep 2
+							clear
+						f_blockweb
+						;;
+					esac
+					}
+				f_blockweb	
+				#Check the result
+				clear
+				echo
+				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Primary Nameserver):${NC}"
+				echo
+				echo -e "${YELLOW}	[+] Step 1: Log-in another server (server2) and start ${BLUE}'nmtui'${YELLOW}.${NC}"
+				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${bind_server1_ip}.${NC}"
+				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_1}.example.com${YELLOW}.${NC}"
+				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
+				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
+				break
+		;;
+	#Set up Secondary Nameserver
+		"Server2")
+				clear
+				echo
+				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
+				echo
+				kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; 
+				yum remove unbound -y -q; yum remove bind -y -q
+				clear
+			#Install BIND packages
+				echo
+				echo -e "${YELLOW}${BLINK} [+] Installing Bind service..." ${NC}
+				echo
+				yum install -y -q bind bind-utils; yum update -y -q bind bind-utils
+				clear
+				echo
+				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. ${NC}"
+				cp -a /etc/named.conf /etc.named.conf.bk
+				echo
+			#Get IP from user
+				clear
+				echo
+				echo -e -n "${YELLOW} [+] Input Server 1 IP: ${NC}"
+				read bind_server1_ip
+				echo -e -n "${YELLOW} [+] Input Server 2 IP: ${NC}"
+				read bind_server2_ip
+				echo -e -n "${YELLOW} [+] Input Domain Name Server 1 (Example: ${BLUE}fptjetking1${YELLOW}): ${NC}"
+				read bind_domain_1
+				echo -e -n "${YELLOW} [+] Input Domain Name Server 2 (Example: ${BLUE}fptjetking2${YELLOW}): ${NC}"
+				read bind_domain_2
+				reverse_ip=$(echo "$bind_server1_ip" | awk -F. -vOFS=. '{print $3,$2,$1,"in-addr.arpa"}')
+				clear
+			#Changing named.conf
+				sed -i 's|127.0.0.1|any|' /etc/named.conf
+				sed -i 's|listen-on-v6|#listen-on-v6|' /etc/named.conf
+				sed -i 's|localhost;|any;|' /etc/named.conf
+	#Add Zone to /etc/named.conf
+echo "#A (Forward) Zone Statement for your secondary nameserver
+zone \"example.com\" IN {
+type slave;
+file \"slaves/example.com.zone\";
+masters {${bind_server1_ip};};
+};
+
+#A (Forward) Zone Statement for your secondary nameserver
+zone \"${reverse_ip}\" IN {
+type slave;
+file \"slaves/example.com.rr.zone\";
+masters {${bind_server1_ip};};
+};" >> /etc/named.conf
+			#Checks the syntax of named.conf:
+				named-checkconf /etc/named.conf
+				echo
+				clear
+			#Enable Named service:
+				echo -e "${YELLOW} [+] Named service status:"${NC}
+				echo
+				systemctl enable --now named; systemctl restart named; systemctl status named
+				echo
+			#Add DNS service:
+				echo -e "${YELLOW}Lists your current services running:${NC}"
+				echo
+				firewall-cmd --add-service=dns --permanent; firewall-cmd --reload; firewall-cmd --list-services
+			#Check Zone-transfer
+				echo
+				echo -e "${YELLOW} [+] Check Zone-Transfer status:"${NC}
+				echo
+				ls -l /var/named/slaves/
+				echo
+				echo
+				echo -e "$PAKTC"
+				$READAK
+			#Check the result
+				clear
+				echo
+				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Secondary Nameserver):${NC}"
+				echo
+				echo -e "${YELLOW}	[+] Step 1: Open new tab and type: ${BLUE}'nmtui'${YELLOW}.${NC}"
+				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${bind_server2_ip}.${NC}"
+				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_2}.example.com${YELLOW}.${NC}"
+				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
+				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
+		break
+		;;
+	#Wrong answer	
+		*)
+			echo
+			echo -e "${RED} *** Invalid Choice *** ${NC}"
+			break
+		;;
+			esac
+			done
+			echo
+			echo
+			echo -e "$PAKTGB"
+			$READAK
+	}	
+	
+##############################################################################################################	
+
+#Exercise 13: Create Basic Shell Script
+f_basicshell() {
+		clear
+		echo
+		echo -e -n "${YELLOW} [+] Input your output (Example: ${BLUE}Hello World${YELLOW}): "${NC}
+		read output_shell
+		echo -e -n "${YELLOW} [+] Input new file name (Example: ${BLUE}hello.sh${YELLOW}): "${NC}
+		read filename_shell
+		echo
+	#Writing simple script
+		echo "#!/bin/bash
+		#
+		clear
+		echo "$output_shell"
+		exit" > $filename_shell
+	#Give Permission to excute file
+		chmod +x $filename_shell
+		echo -e "${YELLOW} Type: ${BLUE}./$filename_shell ${YELLOW}to see the result."${NC}
+			echo
+			echo
+			echo -e "$PAKTGB"
+			$READAK		
+	}
+	
+##############################################################################################################
+
+#Exercise 14: Set up a Base NFSv4 Server
+f_nfs() {
+		clear
+		echo
+		echo -e "${YELLOW} [*] Choose your current running server:"${NC}
+		echo
+		#Choose between server1 (NFS Server) and server2
+		select nfs_server in Server1 Server2
+		do
+		case $nfs_server in
+			"Server1")
+				#Install NFS
+					clear
+					echo
+					echo -e "${YELLOW}${BLINK} [+] Installing NFS..."${NC}
+					echo
+					kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q nfs-utils policycoreutils-python
+					yum update -y -q nfs-utils policycoreutils-python
+					clear
+				#Backup files
+					cp -a /etc/exports /etc/exports.bk
+					echo "/srv/nfsexport * (rw)" >> /etc/exports
+					rm -rf /srv/nfsexport; mkdir /srv/nfsexport
+					semanage fcontext -a -t nfs_t "/srv/nfsexport(/.*)?"
+					restorecon -Rv /srv/nfsexport; echo
+				#Add NFS, Mountd, RPC-Bind service on Firewalld
+					echo
+					echo -e "${YELLOW} [+] Add service NFS, Mountd, RPC-Bind (firewalld):"${NC}
+					systemctl enable firewalld; systemctl start firewalld; systemctl restart firewalld
+					firewall-cmd --permanent --add-service=nfs --add-service=mountd --add-service=rpc-bind; firewall-cmd --reload
+					firewall-cmd --list-services;firewall-cmd --list-ports
+				#Restart NFS server
+					echo
+					echo -e "${YELLOW} [+] NFS-server status:"${NC}
+					echo
+					systemctl start nfs-server; systemctl enable nfs-server; systemctl status nfs-server
+					echo
+					echo -e "${YELLOW} [*] Configure NFS on Server 1 successfully!"${NC}
+					break
+				;;		
+			"Server2")
+				#Verify showmount
+					clear
+					echo
+					echo -e -n "${YELLOW} [+] Input NFS-Server ${BLUE}(Server1)${YELLOW} IP: "${NC}
+					read nfs_server1_ip
+					showmount -e $nfs_server1_ip
+					umount /mnt/nfs; rm -rf /mnt/nfs; mkdir /mnt/nfs
+					mount ${nfs_server1_ip}:/srv/nfsexport /mnt/nfs
+					mount | grep nfs
+					echo
+				#Backup and config /etc/fstab files
+					echo -e "${YELLOW} [+] Backup fstab file (/etc/fstab)"${NC}
+					cp -a /etc/fstab /etc/fstab.bk
+					echo "${nfs_server1_ip}:/srv/nfsexport /mnt/nfs nfs _netdev 0 0" >> /etc/fstab
+					echo
+					echo -e "${YELLOW} [+] Remote File System status:"${NC}
+					echo
+					systemctl status remote-fs.target
+					echo
+					clear
+					echo
+					echo -e "${YELLOW}    Follow these instruction to verify everything setup correctly: "${NC}
+					echo
+					echo -e "${YELLOW} [+] Step 1: Reboot the Server2, type: ${BLUE}reboot or init 6${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 2: After reboot, type: ${BLUE}tail -l /etc/fstab; mount | grep nfsexport${YELLOW} to verify."${NC}
+					break
+				;;
+				*)
+					echo
+					echo -e "${RED} *** Invalid Choice *** ${NC}"
+					break
+				;;
+				esac
+				done
+					echo
+					echo
+					echo -e "$PAKTGB"
+					$READAK		
+	}
+	
+	export -f f_nfs
+
+##############################################################################################################
+
+
 
 ##############################################################################################################
 
@@ -731,20 +1137,22 @@ f_search() {
 		read application
 		
 	#Check Application installed or not yet
+		echo
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q dnf; yum update -y -q dnf && clear
+		echo
 		dnf search $application
 		echo
 	#Check for no answer
 		if [[ -z $application ]]; then
-			f_error
 			echo
-			echo -e "${YELLOW}Please input correctly what you need to find.${NC}"
+			clear
 			echo
-			exit 0
-		fi 
-		echo
-		echo
-		echo -e "$PAKTGB"
-		$READAK
+			echo -e "${YELLOW}Please input exactly what you need to find.${NC}"	
+		fi	
+			echo
+			echo
+			echo -e "$PAKTGB"
+			$READAK		
 	}
 
 ##############################################################################################################
@@ -826,7 +1234,7 @@ f_main(){
 		12) f_dns_bind;;
 		13) f_basicshell;;
 		14) f_nfs;;
-		15) f_smb;;
+		15) f_sambaserver;;
 		16) f_test;;
 		17) f_test;;
 		18) f_test;;
