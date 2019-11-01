@@ -26,7 +26,7 @@ USAGE:
 3. Go to the folder just downloaded & give permission file bash to Execute:
 
 - cd fedora-automatic-tools
-- chmod +x linuxscripts.sh
+- chmod +x menu1.sh
 
 4. Run and enjoy the automation:
 
