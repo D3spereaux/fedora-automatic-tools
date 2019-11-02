@@ -9,6 +9,7 @@
 		RED='\033[1;31m'
 		YELLOW='\033[1;33m'
 		NC='\033[0m'
+		CYAN='\033[1;36m'
 		BLINK='\033[5m'
 
 		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue...${NC}"
@@ -23,6 +24,7 @@
 		export RED
 		export YELLOW
 		export NC
+		export CYAN
 		export BLINK
 		
 		export PAKTC
@@ -80,6 +82,16 @@ f_root () {
 #Exercise 1: Setup Static IP 
 f_setip () {
 		clear
+		echo -e "${YELLOW} [*] Choose your option:"${NC}
+		echo
+	#Choose between 3 options (Static IP, DHCP Client, DHCP Server)
+		select config_network in "Static IP" "DHCP Client" "DHCP Server"
+		do
+		case $config_network in
+	"Static IP")
+	f_staticip_data () {		
+			clear
+			echo
 	#Get data from user (IP - Gateway - DNS)
 		echo -e "${BLUE} Input IP information: ${NC}"
 		echo
@@ -93,11 +105,11 @@ f_setip () {
 			read dns2
 			echo
 	#Confirm data from user
-		f_confirmdata() {	
+		f_staticip_confirmdata() {	
 			echo -e -n "${YELLOW}Please confirm again [YES/NO]: ${NC}"
-				read confirmdata
+				read staticip_confirmdata
 				echo
-			case $confirmdata in
+			case $staticip_confirmdata in
 				yes|Yes|YES|y|Y)
 			#Backup ifcfg-ens33
 					echo
@@ -125,7 +137,8 @@ f_setip () {
 					clear
 			#Check ping
 					echo
-					echo -e -n "${RED}${BLINK}CHECKING...${NC}"
+					echo -e -n "${RED}${BLINK} CHECKING...${NC}"
+						sleep 5
 						echo
 						echo
 						if ping -q -c 1 -W 1 google.com >/dev/null; then
@@ -149,7 +162,7 @@ f_setip () {
 				no|No|NO|n|N)
 					echo -e "${BLUE}Alright, slow down. Let's try again!${NC}"
 					sleep 2
-					f_setip
+					f_staticip_data
 					;;
 				*)
 					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
@@ -159,18 +172,278 @@ f_setip () {
 					clear
 				#Show data for user again
 					echo
-					echo -e "${BLUE}Your Input: ${NC}"
+					echo -e "${CYAN} [*] Your Input: ${NC}"
 					echo
 					echo -e "${YELLOW}[+] Static IP: $staticip${NC}"
 					echo -e "${YELLOW}[+] Gateway  : $gateway${NC}"
 					echo -e "${YELLOW}[+] DNS-1    : $dns1${NC}"
 					echo -e "${YELLOW}[+] DNS-2    : $dns2${NC}"
 					echo
-					f_confirmdata
+					f_staticip_confirmdata
 					;;
 					esac
 			}
-			f_confirmdata
+			f_staticip_confirmdata
+		}
+		f_staticip_data
+		break
+	;;
+	"DHCP Client")
+			clear
+			echo
+			echo -e "${YELLOW} [*] Choose your Client OS: "${NC}
+			echo
+			select client_os in "Fedora" "Debian" "OpenSUSE" "Windows" "Mac OS"
+			do
+			case $client_os in
+				"Fedora")
+					clear
+					echo
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo
+					echo
+					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}ens33, eth0${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 2: Open the ${BLUE}/etc/sysconfig/network-scripts/ifcfg-eth0${YELLOW} file ${CYAN}(Remember to change the Interface Name)${YELLOW} (${CYAN}HINT${YELLOW}: Using ${BLUE}'vi'${YELLOW} or ${BLUE}'vim'${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 3: Confirm the configuration file must contain the following lines:"${NC}
+					echo -e "${BLUE}             DEVICE=eth0"${NC}
+					echo -e "${BLUE}             BOOTPROTO=DHCP"${NC}
+					echo -e "${BLUE}             ONBOOT=YES"${NC}
+					echo -e "${YELLOW} [+] Step 4: Save & Close the configuration file and type: ${BLUE}'systemctl restart network'${YELLOW} to restart the network."${NC}
+					echo -e "${YELLOW} [+] Step 5: Type: ${BLUE}'ifconfig'${YELLOW} and confirm your Client has been requested new IP automatic successfully!"${NC}
+					break
+				;;
+				"Debian")
+					clear
+					echo
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo
+					echo
+					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}lo, eth0${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 2: Open the ${BLUE}/etc/network/interfaces${YELLOW} file (${CYAN}HINT${YELLOW}: Using ${BLUE}'vi'${YELLOW} or ${BLUE}'vim'${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 3: Confirm the configuration file must contain the following lines:"${NC}
+					echo -e "${BLUE}             auto eth0"${NC}
+					echo -e "${BLUE}             iface eth0 inet dhcp"${NC}
+					echo -e "${YELLOW} [+] Step 4: Save & Close the configuration file and type: ${BLUE}'ifdown eth0; ifup eth0'${YELLOW} to restart the network."${NC}
+					echo -e "${YELLOW} [+] Step 5: Type: ${BLUE}'ifconfig'${YELLOW} and confirm your Client has been requested new IP automatic successfully!"${NC}
+					break
+				;;
+				"OpenSUSE")
+					clear
+					echo
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo
+					echo
+					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}eth0${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 2: Open the ${BLUE}/etc/sysconfig/network/ifcfg-eth0${YELLOW} file ${CYAN}(Remember to change the Interface Name)${YELLOW} (${CYAN}HINT${YELLOW}: Using ${BLUE}'vi'${YELLOW} or ${BLUE}'vim'${YELLOW})."${NC}
+					echo -e "${YELLOW} [+] Step 3: Confirm the configuration file must contain the following lines:"${NC}
+					echo -e "${BLUE}             BOOTPROTO='dhcp'"${NC}
+					echo -e "${BLUE}             BROADCAST=''"${NC}
+					echo -e "${BLUE}             IPADDR=''"${NC}
+					echo -e "${BLUE}             NETMASK=''"${NC}
+					echo -e "${BLUE}             NETWORK=''"${NC}
+					echo -e "${YELLOW} [+] Step 4: Open the ${BLUE}/etc/sysconfig/network/routes${YELLOW} and confirm the configuration file must contain the following line:"${NC}
+					echo -e "${BLUE}             #default 10.0.0.1 - eth0"${NC}
+					echo -e "${YELLOW} [+] Step 5: Save & Close both configuration files and type: ${BLUE}'systemctl restart wickedd wickedd-dhcp4 wicked'${YELLOW} to restart the network."${NC}
+					echo -e "${YELLOW} [+] Step 6: Type: ${BLUE}'ifconfig'${YELLOW} and confirm your Client has been requested new IP automatic successfully!"${NC}
+					break
+				;;
+				"Windows")
+					clear
+					echo
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo
+					echo
+					echo -e "${YELLOW} [+] Step 1: Using key combine '${CYAN}Windows + R${YELLOW}' to open RUN windows then type: ${BLUE}'ncpa.cpl'${YELLOW} to open the Network Connections."${NC}
+					echo -e "${YELLOW} [+] Step 2: Right-click to the Network Interface Card and choose ${BLUE}'Properties'${YELLOW} > Double left-click to ${BLUE}'Internet Protocol Version 4 (TCP/IP)'${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 3: Choose ${BLUE}'Obtain an IP address automatically'${YELLOW} & ${BLUE}'Obtain DNS server address automatically'${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 4: Open new Terminal Command Prompt then type: ${BLUE}'ipconfig /release && ipconfig /renew && ipconfig /all'${YELLOW} and confirm your Client has been requested new IP automatic successfully!"${NC}
+					break
+				;;
+				"Mac OS")
+					clear
+					echo
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo
+					echo
+					echo -e "${YELLOW} [+] Step 1: On Client Mac, choose ${BLUE}'Apple menu (Icon Apple)'${YELLOW} > ${BLUE}'System Preferences'${YELLOW}, then click to the ${BLUE}'Network'${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 2: Select the Network Connection you want to use (such as ${CYAN}Ethernet${YELLOW}) in the list."${NC}
+					echo -e "${YELLOW} [+] Step 3: From the Location drop-down list, choose ${BLUE}'Using DHCP'${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 4: Open new Terminal and type: ${BLUE}'ifconfig | grep "inet " | grep -v 127.0.0.1'${YELLOW} and confirm your Client has been requested new IP automatic successfully!"${NC}
+					break
+				;;
+				*)
+					echo
+					echo -e "${RED} *** Invalid Choice *** ${NC}"
+					break
+				;;    
+				esac 
+				done
+		break
+	;;
+	"DHCP Server")
+	#Configuring a DHCP Server
+		clear
+		echo
+		echo -e "${YELLOW}${BLINK} [+] Installing ${BLUE}DHCP${YELLOW} packages..."${NC}
+	#Force kill Yum
+		echo
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
+		yum remove -y -q dhcp; yum install -y -q dhcp; yum update -y -q dhcp
+		yum install -y -q firewalld; yum update -y -q firewalld
+		clear
+	f_dhcpserver_data() {	
+	#Check listening port 67
+		echo
+		echo -e "${YELLOW} [+] Check listen and enable on port 67..." ${NC}
+		lsof -i :67 > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+		clear
+			echo
+			echo -e "${YELLOW}It looks like another software is listening on port 67:"${NC}
+			echo
+			lsof -i :67
+			echo
+			echo -e "${YELLOW}Please disable or uninstall it before installing DHCP Server ${BLUE}(kill -9 PID)${YELLOW}."${NC}
+			while [[ $CONTINUE != "Y" && $CONTINUE != "N" ]]; do
+			echo
+			read -rp "Do you still want to run the script? DHCP Server might not work... [Y/N]: " -e CONTINUE
+			done
+			if [[ "$CONTINUE" = "N" ]]; then
+				echo
+				echo
+				echo -e "$PAKTGB"
+				$READAK
+				echo
+				exit 2
+			fi
+		fi
+	#Get data from User
+		clear
+		echo
+		echo -e "${YELLOW} [*] Input your network information to create DHCP Server:"${NC}
+		echo
+		echo -e "${CYAN}		[1] Options:"${NC}
+		echo
+		echo -e -n "${YELLOW} [+] Your Subnet (Example:${BLUE} 192.168.1.0${YELLOW}): "${NC}
+			read dhcp_subnet
+		echo -e -n "${YELLOW} [+] Your Netmask (Example:${BLUE} 255.255.255.0${YELLOW}): "${NC}
+			read dhcp_netmask
+		echo -e -n "${YELLOW} [+] Your Gateway (Example:${BLUE} 192.168.1.1${YELLOW}): "${NC}
+			read dhcp_gateway
+		echo -e -n "${YELLOW} [+] Your Broadcasst Address (Example:${BLUE} 192.168.1.255${YELLOW}): "${NC}
+			read dhcp_broadcast
+		echo -e -n "${YELLOW} [+] Your Domain Name (Example:${BLUE} example.com${YELLOW}): "${NC}
+			read dhcp_domain
+		echo -e -n "${YELLOW} [+] Your DNS Server 1 (Example:${BLUE} 192.168.15.210${YELLOW}): "${NC}
+			read dhcp_dns1
+		echo -e -n "${YELLOW} [+] Your DNS Server 2 (Example:${BLUE} 192.168.15.220${YELLOW}): "${NC}
+			read dhcp_dns2
+		echo
+		echo -e "${CYAN}		[2] Scope Range:"${NC}
+		echo
+		echo -e -n "${YELLOW} [+] From (Example:${BLUE} 192.168.1.10${YELLOW}): "${NC}
+			read dhcp_range1
+		echo -e -n "${YELLOW} [+] To (Example:${BLUE} 192.168.1.100${YELLOW}): "${NC}
+			read dhcp_range2	
+		echo
+		echo -e "${CYAN}		[3] Lease-time (Second):"${NC}
+		echo
+		echo -e -n "${YELLOW} [+] Default Time (Example:${BLUE} 600${YELLOW}): "${NC}
+			read dhcp_defaultleasetime
+		echo -e -n "${YELLOW} [+] Max Time (Example:${BLUE} 86400${YELLOW}): "${NC}
+			read dhcp_maxleasetime
+		echo
+	#Confirm data from user
+		f_dhcpserver_confirmdata() {
+		echo
+		echo -e -n "${YELLOW}Please confirm again [YES/NO]: ${NC}"
+				read dhcpserver_confirmdata
+				echo
+			case $dhcpserver_confirmdata in
+				yes|Yes|YES|y|Y)
+	#Create Backup files
+		echo
+		echo -e "${YELLOW} [*] Backup and config files DHCPD (dhcpd.conf)."${NC}
+		echo
+		cp -a /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bk
+	#Add data to dhcpd.conf
+		echo "
+	option domain-name \"${dhcp_domain}\";
+	option domain-name-servers ${dhcp_dns1}, ${dhcp_dns2};
+	default-lease-time ${dhcp_defaultleasetime};
+	max-lease-time ${dhcp_maxleasetime};
+	lease-file-name \"/var/lib/dhcpd/dhcpd.leases\";
+	authoritative;
+		
+	subnet ${dhcp_subnet} netmask ${dhcp_netmask} {
+		range ${dhcp_range1} ${dhcp_range2};
+		default-lease-time $dhcp_defaultleasetime;
+		max-lease-time $dhcp_maxleasetime;
+		option subnet-mask $dhcp_netmask;
+		option routers $dhcp_gateway;
+		option time-offset -18000; # Eastern Standard Time
+		option broadcast-address $dhcp_broadcast;
+		option domain-name-servers ${dhcp_dns1}, ${dhcp_dns2};
+		}" >> /etc/dhcp/dhcpd.conf
+	#Start DHCP Server
+		clear
+		echo
+		echo -e "${YELLOW} [*] DHCPD service status: "${NC}
+		echo
+		systemctl enable dhcpd; systemctl restart dhcpd; systemctl status dhcpd
+	#Enable port 67 (USING IPTABLES or Firewalld)
+		echo
+		echo -e "${YELLOW} [+] Enable DHCP service (Firewalld). "${NC}
+		echo
+		firewall-cmd --add-service=dhcp --permanent; firewall-cmd --reload
+	#Check status on DHCP (67)
+		netstat -lnup | grep 67
+		ps aux | grep dhcp | grep -v "grep"
+			echo
+			echo -e "${YELLOW} [*] Configure DHCP Server successfully!"${NC}
+				break
+				;;
+				no|No|NO|n|N)
+					echo -e "${BLUE}Alright, slow down. Let's try again!${NC}"
+					sleep 2
+					clear
+					f_dhcpserver_data
+				;;
+				*)
+					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+					echo
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					sleep 2
+					clear
+				#Show data for user again
+					echo
+					echo -e "${CYAN} [*] Your Input: ${NC}"
+					echo
+					echo -e "${YELLOW}[+] Subnet            : $dhcp_subnet${NC}"
+					echo -e "${YELLOW}[+] Netmask           : $dhcp_netmask${NC}"
+					echo -e "${YELLOW}[+] Gateway           : $dhcp_gateway${NC}"
+					echo -e "${YELLOW}[+] DNS-1             : $dhcp_dns1${NC}"
+					echo -e "${YELLOW}[+] DNS-2             : $dhcp_dns2${NC}"
+					echo -e "${YELLOW}[+] Range IP          : $dhcp_range1 - $dhcp_range2${NC}"
+					echo -e "${YELLOW}[+] Default Lease Time: $dhcp_defaultleasetime${NC}"
+					echo -e "${YELLOW}[+] Max Lease Time    : $dhcp_maxleasetime${NC}"
+					echo
+					f_dhcpserver_confirmdata
+				;;
+				esac
+			}	
+			f_dhcpserver_confirmdata
+		}
+		f_dhcpserver_data
+		break
+	;;
+	*)
+			echo
+			echo -e "${RED} *** Invalid Choice *** ${NC}"
+			break
+			;;
+		esac
+		done
 			echo
 			echo
 			echo -e "$PAKTGB"
@@ -280,25 +553,63 @@ f_newuser() {
 f_timedate() {
 		clear
 		echo
-		echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): ${NC}"
-		read date
-		echo -e -n "${YELLOW}Input Time (Example: 19:30:50)  : ${NC}"
-		read time
-		timedatectl set-ntp false
-		timedatectl set-local-rtc 0
-		timedatectl set-time $date
-		timedatectl set-time $time
-		timedatectl set-timezone Asia/Ho_Chi_Minh
-		clear
+		echo -e "${YELLOW} [*] Your Choice:"${NC}
 		echo
-		echo -e "${YELLOW}Here is your new time & date status: ${NC}"
-		echo
-		date
-		echo
-		echo
-		echo -e "$PAKTGB"
-		$READAK
+	#Choose between 2 options (Primary and Secondary)
+		select config_time in Manual Automatic
+		do
+		case $config_time in
+			"Manual")
+				clear
+				echo
+				echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): ${NC}"
+				read date
+				echo -e -n "${YELLOW}Input Time (Example: 19:30:50)  : ${NC}"
+				read time
+				timedatectl set-ntp false
+				timedatectl set-local-rtc 0
+				timedatectl set-time $date
+				timedatectl set-time $time
+				timedatectl set-timezone Asia/Ho_Chi_Minh
+				clear
+				echo
+				echo -e "${YELLOW} Here is your new time & date status: ${NC}"
+				echo
+				date
+				break
+			;;
+			"Automatic")
+				clear
+				echo
+				echo -e "${YELLOW} [+] Set up NTP:${NC}"
+				echo
+				timedatectl set-timezone Asia/Ho_Chi_Minh
+				timedatectl set-ntp 1
+				systemctl enable chronyd; systemctl start chronyd; systemctl status -l chronyd
+				echo
+				echo -e "${YELLOW}${BLINK} [*] Waiting to synchronize NTP...${NC}"
+				sleep 10
+				clear
+				echo
+				echo -e "${YELLOW} Here is your new time & date status: ${NC}"
+				echo
+				timedatectl status
+				break
+			;;
+			*)
+				echo
+				echo -e "${RED} *** Invalid Choice *** ${NC}"
+				break
+			;;
+		esac
+		done
+			echo
+			echo
+			echo -e "$PAKTGB"
+			$READAK		
 	}
+	
+	export -f f_timedate
 
 ##############################################################################################################	
 
@@ -385,6 +696,13 @@ f_openservice() {
 		echo -e -n "${YELLOW}Input service to enable (Example: ${BLUE}'http' ${YELLOW}or ${BLUE}'ftp'${YELLOW}): ${NC}"
 		read service
 		firewall-cmd --add-service=$service --permanent; firewall-cmd --reload
+		echo
+		echo -e -n "${YELLOW}Input port to enable (Example: ${BLUE}'21' ${YELLOW}or ${BLUE}'2022'${YELLOW}): ${NC}"
+		read service_port
+		echo
+		echo -e -n "${YELLOW}Input your protocol (Example: ${BLUE}tcp, udp, sctp, dccp${YELLOW}): ${NC}"
+		read service_protocol
+		firewall-cmd --add-port=${service_port}/${service_protocol} --permanent; firewall-cmd --reload
 	#Restart firewalld
 		clear
 		echo
@@ -396,6 +714,7 @@ f_openservice() {
 		echo -e "${YELLOW}Lists your current services running:${NC}"
 		echo
 		firewall-cmd --list-services; firewall-cmd --list-ports
+		echo
 		echo
 		echo -e "$PAKTGB"
 		$READAK
@@ -665,7 +984,8 @@ f_dns_unbound() {
 		echo
 		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Unbound${YELLOW}... ${NC}"
 		echo
-		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q unbound; yum update -y -q unbound
+		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
+		yum remove unbound -y -q; yum remove bind -y -q; yum install -y -q unbound; yum update -y -q unbound
 		systemctl enable unbound; systemctl start unbound
 		clear
 	#Backup and edit unbound.conf
@@ -712,7 +1032,7 @@ f_dns_unbound() {
 		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
 		echo
 		echo -e "${YELLOW}	[+] Step 1: Log-in another server (server2) and start ${BLUE}'nmtui'${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on Unbound Server (server1).${NC}"
+		echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on Unbound Server (Primary Server).${NC}"
 		echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig example.com${YELLOW}.${NC}"
 		echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
 		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
@@ -731,10 +1051,10 @@ f_dns_bind() {
 		echo -e "${YELLOW} [*] Choose your current running server:"${NC}
 		echo
 	#Choose between 2 server (Primary and Secondary)
-		select bind_server in Server1 Server2
+		select bind_server in "Primary Server" "Secondary Server"
 		do
 		case $bind_server in
-			"Server1")
+			"Primary Server")
 				clear
 				echo
 				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
@@ -744,7 +1064,7 @@ f_dns_bind() {
 				clear
 			#Install BIND packages
 				echo
-				echo -e "${YELLOW}${BLINK} [+] Installing Bind service..." ${NC}
+				echo -e "${YELLOW}${BLINK} [+] Installing ${BLUE}Bind${YELLOW} service..." ${NC}
 				echo
 				yum install -y -q bind bind-utils; yum update -y -q bind bind-utils
 				clear
@@ -755,9 +1075,9 @@ f_dns_bind() {
 			#Get IP from user
 				clear
 				echo
-				echo -e -n "${YELLOW} [+] Input Server 1 IP: ${NC}"
+				echo -e -n "${YELLOW} [+] Input Primary Server IP  : ${NC}"
 				read bind_server1_ip
-				echo -e -n "${YELLOW} [+] Input Server 2 IP: ${NC}"
+				echo -e -n "${YELLOW} [+] Input Secondary Server IP: ${NC}"
 				read bind_server2_ip
 				echo -e -n "${YELLOW} [+] Input Domain Name Server 1 (Example: ${BLUE}fptjetking1${YELLOW}): ${NC}"
 				read bind_domain_1
@@ -914,7 +1234,7 @@ echo "\$ORIGIN ${reverse_ip}.
 				break
 		;;
 	#Set up Secondary Nameserver
-		"Server2")
+		"Secondary Server")
 				clear
 				echo
 				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
@@ -1045,11 +1365,11 @@ f_nfs() {
 		echo
 		echo -e "${YELLOW} [*] Choose your current running server:"${NC}
 		echo
-		#Choose between server1 (NFS Server) and server2
-		select nfs_server in Server1 Server2
+		#Choose between Primary (NFS Server) and Secondary Server
+		select nfs_server in "Primary Server" "Secondary Server"
 		do
 		case $nfs_server in
-			"Server1")
+			"Primary Server")
 				#Install NFS
 					clear
 					echo
@@ -1076,14 +1396,14 @@ f_nfs() {
 					echo
 					systemctl start nfs-server; systemctl enable nfs-server; systemctl status nfs-server
 					echo
-					echo -e "${YELLOW} [*] Configure NFS on Server 1 successfully!"${NC}
+					echo -e "${YELLOW} [*] Configure NFS on Primary Server successfully!"${NC}
 					break
 				;;		
-			"Server2")
+			"Secondary Server")
 				#Verify showmount
 					clear
 					echo
-					echo -e -n "${YELLOW} [+] Input NFS-Server ${BLUE}(Server1)${YELLOW} IP: "${NC}
+					echo -e -n "${YELLOW} [+] Input NFS-Server ${BLUE}(Primary Server)${YELLOW} IP: "${NC}
 					read nfs_server1_ip
 					showmount -e $nfs_server1_ip
 					umount /mnt/nfs; rm -rf /mnt/nfs; mkdir /mnt/nfs
@@ -1103,7 +1423,7 @@ f_nfs() {
 					echo
 					echo -e "${YELLOW}    Follow these instruction to verify everything setup correctly: "${NC}
 					echo
-					echo -e "${YELLOW} [+] Step 1: Reboot the Server2, type: ${BLUE}reboot or init 6${YELLOW}."${NC}
+					echo -e "${YELLOW} [+] Step 1: Reboot the Secondary Server, type: ${BLUE}reboot or init 6${YELLOW}."${NC}
 					echo -e "${YELLOW} [+] Step 2: After reboot, type: ${BLUE}tail -l /etc/fstab; mount | grep nfsexport${YELLOW} to verify."${NC}
 					break
 				;;
@@ -1124,7 +1444,70 @@ f_nfs() {
 
 ##############################################################################################################
 
-
+#Exercise 15: Configuring a SAMBA Server
+f_sambaserver() {
+		#Install SAMBA
+			clear
+			echo
+			echo -e "${YELLOW}${BLINK} [+] Installing Samba..."${NC}
+			echo
+			kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
+			yum install -y -q samba samba-client cifs-utils
+			yum update -y -q samba samba-client cifs-utils
+			clear
+		#Ask to create users
+			echo
+			echo -e "${YELLOW} [*] Choose your option:"${NC}
+			echo
+			select samba_data in "Create New Samba User" "Config Samba Shared"
+			do
+			case $samba_data in
+				"Create New Samba User")
+					clear
+					echo
+				#Get user info
+					echo -e -n "${YELLOW} [+] Input new username: "${NC}
+					read samba_user1
+					echo -e -n "${YELLOW} [+] New Password: ${NC}"
+					read samba_user_passwd
+					echo -e -n "${YELLOW} [+] Input new Samba group name: "${NC}
+					read samba_group
+				#Create SAMBA Users
+					echo -e "${YELLOW} [+] Create new SAMBA User."${NC}
+					for i in ${samba_user1}; do useradd -s /sbin/nologin $i; done
+				#Create Samba Password
+					(echo "$samba_user_passwd"; echo "$samba_user_passwd") | smbpasswd -s -a $samba_user1
+				#Create SAMBA Group
+					echo -e "${YELLOW} [+] Create new SAMBA Group."${NC}	
+					groupadd $samba_group
+					echo -e "${YELLOW} [+] Create new shared directory ($samba_newfolder)."${NC}
+					rm -rf $samba_newfolder; mkdir -pv $samba_newfolder
+				#Add to SMB group
+					for i in ${samba_user1}; do usermod -aG $samba_group $i; done
+				#List who in group
+					lid -g $samba_group
+					
+				break
+				;;
+				"Config Samba Shared")
+					clear
+					echo
+					echo -e -n "${YELLOW} [+] Input new PATH to create Samba Shared folder (Example: ${BLUE}/data/sambashare${YELLOW}): "${NC}
+					read samba_newfolder
+				break
+				;;
+				*)
+				echo
+				echo -e "${RED} *** Invalid Choice *** ${NC}"
+				break
+				;; 
+			esac
+			done
+		echo
+		echo
+		echo -e "$PAKTGB"
+		$READAK
+	}	
 
 ##############################################################################################################
 
@@ -1205,9 +1588,9 @@ f_main(){
 	#Main Menu:
                 echo -e "${BLUE}       BASICS${NC}                                ${BLUE}ADVANCED${NC}                          ${BLUE}OTHERS${NC}"
                 echo
-                echo -e "${YELLOW}1.  Config IP                       10.  Manage Apache Services          90.  Update CentOS"
+                echo -e "${YELLOW}1.  Config Network                  10.  Manage Apache Services          90.  Update CentOS"
                 echo -e          "2.  Connect Putty                   11.  Config DNS (Unbound)            91.  Search Software"
-                echo -e          "3.  Config Hostname                 12.  Config DNS (Bind)               92.  Check IP"
+                echo -e          "3.  Change Hostname                 12.  Config DNS (Bind)               92.  Check IP"
                 echo -e          "4.  Create New User                 13.  Create Basic Shell              93.  Exit"
                 echo -e          "5.  Config Timedate                 14.  Config NFS"
                 echo -e          "6.  Create New LVM                  15.  Config SMB"
