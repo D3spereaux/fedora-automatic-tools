@@ -1690,7 +1690,10 @@ f_updatetools() {
 		if [[ -d /opt/fedora-automatic-tools ]]; then
 			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Updating tool${YELLOW}..."${NC}
 			cd /opt/fedora-automatic-tools
-			git pull #This command is up-to-date tools if it has new version.
+		#This command is up-to-date tools if it has new version.	
+			git pull; chmod +x automatic-script.sh
+			echo
+			echo -e "${YELLOW} [*] Updated tool successfully!"${NC}
 		else
 			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Downloading tool${YELLOW}..."${NC}
 		#Download sources from Github
