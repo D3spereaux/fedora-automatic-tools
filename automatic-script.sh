@@ -1679,15 +1679,31 @@ f_updatetools() {
 		clear
 		echo
 	#Install GIT package
+		echo -e "${YELLOW}${BLINK} [+] Installing ${BLUE}GIT Package${YELLOW}..."
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
 		yum install -y -q git; yum update -y -q git
-	#Download sources from Github
-		git clone https://github.com/Despereaux222/fedora-automatic-tools.git
-		cd fedora-automatic-tools; chmod +x 
+	#Check if folder existing
+		clear
+		echo
+		echo -e "${YELLOW} [*] Check for updates this tool."${NC}
+		echo
+		if [[ -d /opt/fedora-automatic-tools ]]; then
+			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Updating tool${YELLOW}..."${NC}
+			cd /opt/fedora-automatic-tools
+			git pull #This command is up-to-date tools if it has new version.
+		else
+			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Downloading tool${YELLOW}..."${NC}
+		#Download sources from Github
+			git clone https://github.com/Despereaux222/fedora-automatic-tools.git
+			cd /opt/fedora-automatic-tools; chmod +x automatic-script.sh
+			clear
+			echo
+			echo -e "${YELLOW} [*] This tool has been downloaded success in directory (${BLUE}/opt/fedora-automatic-tools${YELLOW})."${NC}
+			echo -e "${YELLOW} Let's type: ${CYAN}./automatic-script.sh${YELLOW} to enjoy new version."${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
-		$READAK	
+		$READAK
 }
 
 ##############################################################################################################
@@ -1781,7 +1797,7 @@ f_main(){
 	#Main Menu:
                 echo -e "${CYAN}       BASICS${NC}                                ${CYAN}ADVANCED${NC}                          ${CYAN}OTHERS${NC}"
                 echo
-                echo -e "${YELLOW}1.  Config Network                  10.  Manage Apache Services          90.  Update Tools"
+                echo -e "${YELLOW}1.  Config Network                  10.  Manage Apache Services          90.  Check for Updates"
                 echo -e          "2.  Connect Putty                   11.  Config DNS (Unbound)            91.  Update CentOS"
                 echo -e          "3.  Change Hostname                 12.  Config DNS (Bind)               92.  Search Software"
                 echo -e          "4.  Create New User                 13.  Create Basic Shell              93.  Check IP"
