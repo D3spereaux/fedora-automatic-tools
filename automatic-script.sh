@@ -1703,6 +1703,7 @@ f_updatetools() {
 			echo
 			echo -e "${YELLOW} [*] This tool has been downloaded success in directory (${BLUE}/opt/fedora-automatic-tools${YELLOW})."${NC}
 			echo -e "${YELLOW} Let's type: ${CYAN}./automatic-script.sh${YELLOW} to enjoy new version."${NC}
+		fi
 		echo
 		echo
 		echo -e "$PAKTGB"
