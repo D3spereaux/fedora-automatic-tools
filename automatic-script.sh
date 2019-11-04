@@ -1679,7 +1679,7 @@ f_updatetools() {
 		clear
 		echo
 	#Install GIT package
-		echo -e "${YELLOW}${BLINK} [+] Installing ${BLUE}GIT Package${YELLOW}..."
+		echo -e "${YELLOW}${BLINK} [+] Installing ${BLUE}GIT Package${YELLOW}..."${NC}
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
 		yum install -y -q git; yum update -y -q git
 	#Check if folder existing
@@ -1690,7 +1690,8 @@ f_updatetools() {
 		if [[ -d /opt/fedora-automatic-tools ]]; then
 			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Updating tool${YELLOW}..."${NC}
 			cd /opt/fedora-automatic-tools
-		#This command is up-to-date tools if it has new version.	
+		#This command is up-to-date tools if it has new version.
+			git reset --hard HEAD
 			git pull; chmod +x automatic-script.sh
 			echo
 			echo -e "${YELLOW} [*] Updated tool successfully!"${NC}
@@ -1834,7 +1835,7 @@ f_main(){
 		16) f_test;;
 		17) f_test;;
 		18) f_test;;
-		90) f_updatetools;
+		90) f_updatetools;;
 		91) f_updatecentos;;
 		92) f_search;;
 		93) f_checkinternet;;
