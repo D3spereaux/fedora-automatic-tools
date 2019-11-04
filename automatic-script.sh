@@ -1702,7 +1702,7 @@ f_updatetools() {
 		#Download sources from Github
 			cd /opt/
 			git clone https://github.com/Despereaux222/fedora-automatic-tools.git
-			cd /fedora-automatic-tools; chmod +x automatic-script.sh
+			cd /opt/fedora-automatic-tools; chmod +x automatic-script.sh
 			clear
 			echo
 			echo -e "${YELLOW} [*] This tool has been downloaded success in directory (${BLUE}/opt/fedora-automatic-tools${YELLOW})."${NC}
