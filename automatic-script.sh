@@ -1694,6 +1694,8 @@ f_updatetools() {
 			git reset --hard HEAD
 			git pull; chmod +x automatic-script.sh
 			echo
+			clear
+			echo
 			echo -e "${YELLOW} [*] Updated tool successfully!"${NC}
 		else
 			echo -e "${YELLOW}${BLINK} [+] ${CYAN}Downloading tool${YELLOW}..."${NC}
@@ -1703,7 +1705,7 @@ f_updatetools() {
 			clear
 			echo
 			echo -e "${YELLOW} [*] This tool has been downloaded success in directory (${BLUE}/opt/fedora-automatic-tools${YELLOW})."${NC}
-			echo -e "${YELLOW} Let's type: ${CYAN}./automatic-script.sh${YELLOW} to enjoy new version."${NC}
+			echo -e "${YELLOW}     Let's type: ${CYAN}./automatic-script.sh${YELLOW} to enjoy the new version!!!"${NC}
 		fi
 		echo
 		echo
