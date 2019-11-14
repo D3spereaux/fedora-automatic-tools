@@ -1,7 +1,6 @@
 #!/bin/bash
-#Create and modify by D3spere@ux
+#Create and modify by Brian Dao - D3spere@ux
 #This tool uses for Exercises LPI (Linux Professional Institute) or person who working in Fedora distro field.
-
 #########################################################4####################################################
 
 #Global Variables (GV)
@@ -12,8 +11,8 @@
 		CYAN='\033[1;36m'
 		BLINK='\033[5m'
 
-		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue...${NC}"
-		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back...${NC}"
+		PAKTC="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to continue..."${NC}
+		PAKTGB="${BLINK}${YELLOW}Press ${RED}ANY KEY${YELLOW} to go back..."${NC}
 #Code to read from keyboard without return
 		READAK="read -n 1"
 		
@@ -38,16 +37,16 @@ f_banner(){
 		f_root
         echo
         echo -e "${YELLOW}
-           ######################################################################
-           #            _        _    _    _    _     _    __     __            #
-           #           | |      | |  | \  | |  | |   | |   \ \   / /            #
-           #           | |      | |  |  \ | |  | |   | |    \ \_/ /             #
-           #           | |      | |  |   \| |  | |   | |    /  _  \             #
-           #           | |___   | |  | |\   |  | |___| |   / /   \ \            #
-           #           |_____|  |_|  |_| \__|  |_______|  /_/     \_\           #
-           #           ${RED}By D3spere@ux${YELLOW}                                            #
-           #                                                                    #
-           ###################################################################### ${NC}"   
+            ######################################################################
+            #            _        _    _    _    _     _    __     __            #
+            #           | |      | |  | \  | |  | |   | |   \ \   / /            #
+            #           | |      | |  |  \ | |  | |   | |    \ \_/ /             #
+            #           | |      | |  |   \| |  | |   | |    /  _  \             #
+            #           | |___   | |  | |\   |  | |___| |   / /   \ \            #
+            #           |_____|  |_|  |_| \__|  |_______|  /_/     \_\           #
+            #           ${RED}By D3spere@ux${YELLOW}                                            #
+            #                                                                    #
+            ###################################################################### "${NC}   
         echo
         echo
        }
@@ -58,7 +57,7 @@ f_banner(){
 #Invalid Input Function
 f_error() {
 		echo
-		echo -e "${RED}${BLINK} *** Invalid choice or entry *** ${NC}"
+		echo -e "${RED}${BLINK} *** Invalid choice or entry *** "${NC}
 		echo
 		exit
 	}
@@ -93,20 +92,20 @@ f_setip () {
 			clear
 			echo
 	#Get data from user (IP - Gateway - DNS)
-		echo -e "${BLUE} Input IP information: ${NC}"
+		echo -e "${BLUE} Input IP information: "${NC}
 		echo
-        echo -e -n "${YELLOW}   [+] Static IP: ${NC}"   
+        echo -e -n "${YELLOW}   [+] Static IP: "${NC}   
             read staticip
-        echo -e -n "${YELLOW}   [+] Gateway  : ${NC}"
+        echo -e -n "${YELLOW}   [+] Gateway  : "${NC}
 			read gateway
-		echo -e -n "${YELLOW}   [+] DNS-1    : ${NC}"
+		echo -e -n "${YELLOW}   [+] DNS-1    : "${NC}
 			read dns1
-		echo -e -n "${YELLOW}   [+] DNS-2    : ${NC}"
+		echo -e -n "${YELLOW}   [+] DNS-2    : "${NC}
 			read dns2
 			echo
 	#Confirm data from user
 		f_staticip_confirmdata() {	
-			echo -e -n "${YELLOW}Please confirm again [YES/NO]: ${NC}"
+			echo -e -n "${YELLOW}Please confirm again [YES/NO]: "${NC}
 				read staticip_confirmdata
 				echo
 			case $staticip_confirmdata in
@@ -137,7 +136,7 @@ f_setip () {
 					clear
 			#Check ping
 					echo
-					echo -e -n "${RED}${BLINK} CHECKING...${NC}"
+					echo -e -n "${RED}${BLINK} CHECKING..."${NC}
 						sleep 5
 						echo
 						echo
@@ -145,39 +144,39 @@ f_setip () {
 							echo
 							clear
 							echo
-							echo -e "${YELLOW}Alright, Your Local IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway ${NC}"
+							echo -e "${YELLOW}Alright, Your Local IP: ${BLUE}$staticip ${YELLOW}- Gateway: ${BLUE}$gateway "${NC}
 							else
 							clear
 							echo
-							echo -e "${RED}FAILED!!!${NC}"
+							echo -e "${RED}FAILED!!!"${NC}
 							echo
 			#Restore backup files				
-							echo -e "${YELLOW}Restore to previous IP setup via the backup files.${NC}"
+							echo -e "${YELLOW}Restore to previous IP setup via the backup files."${NC}
 							mv /etc/sysconfig/network-scripts/ifcfg-ens33.bk /etc/sysconfig/network-scripts/ifcfg-ens33
 							systemctl restart network.service
 							echo
-							echo -e "${YELLOW}Please check your network connection and try again.${NC}"
+							echo -e "${YELLOW}Please check your network connection and try again."${NC}
 							fi
 								;;
 				no|No|NO|n|N)
-					echo -e "${BLUE}Alright, slow down. Let's try again!${NC}"
+					echo -e "${BLUE}Alright, slow down. Let's try again!"${NC}
 					sleep 2
 					f_staticip_data
 					;;
 				*)
-					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+					echo -e "${RED}${BLINK} *** Invalid Entry *** "${NC}
 					echo
-					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'"${NC}
 					sleep 2
 					clear
 				#Show data for user again
 					echo
-					echo -e "${CYAN} [*] Your Input: ${NC}"
+					echo -e "${CYAN} [*] Your Input: "${NC}
 					echo
-					echo -e "${YELLOW}[+] Static IP: $staticip${NC}"
-					echo -e "${YELLOW}[+] Gateway  : $gateway${NC}"
-					echo -e "${YELLOW}[+] DNS-1    : $dns1${NC}"
-					echo -e "${YELLOW}[+] DNS-2    : $dns2${NC}"
+					echo -e "${YELLOW}[+] Static IP: $staticip"${NC}
+					echo -e "${YELLOW}[+] Gateway  : $gateway"${NC}
+					echo -e "${YELLOW}[+] DNS-1    : $dns1"${NC}
+					echo -e "${YELLOW}[+] DNS-2    : $dns2"${NC}
 					echo
 					f_staticip_confirmdata
 					;;
@@ -199,7 +198,7 @@ f_setip () {
 				"Fedora")
 					clear
 					echo
-					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:"${NC}
 					echo
 					echo
 					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}ens33, eth0${YELLOW})."${NC}
@@ -215,7 +214,7 @@ f_setip () {
 				"Debian")
 					clear
 					echo
-					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:"${NC}
 					echo
 					echo
 					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}lo, eth0${YELLOW})."${NC}
@@ -230,7 +229,7 @@ f_setip () {
 				"OpenSUSE")
 					clear
 					echo
-					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:"${NC}
 					echo
 					echo
 					echo -e "${YELLOW} [+] Step 1: To configure a DHCP client manually, make sure you know the Network Device Name on Client (Example: ${BLUE}eth0${YELLOW})."${NC}
@@ -250,7 +249,7 @@ f_setip () {
 				"Windows")
 					clear
 					echo
-					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:"${NC}
 					echo
 					echo
 					echo -e "${YELLOW} [+] Step 1: Using key combine '${CYAN}Windows + R${YELLOW}' to open RUN windows then type: ${BLUE}'ncpa.cpl'${YELLOW} to open the Network Connections."${NC}
@@ -263,7 +262,7 @@ f_setip () {
 				"Mac OS")
 					clear
 					echo
-					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:${NC}"
+					echo -e "${YELLOW} [*] Follow the instructions below to configure ${CYAN}DHCP Client${YELLOW}:"${NC}
 					echo
 					echo
 					echo -e "${YELLOW} [+] Step 1: On Client Mac, choose ${BLUE}'Apple menu (Icon Apple)'${YELLOW} > ${BLUE}'System Preferences'${YELLOW}, then click to the ${BLUE}'Network'${YELLOW}."${NC}
@@ -275,7 +274,7 @@ f_setip () {
 				;;
 				*)
 					echo
-					echo -e "${RED} *** Invalid Choice *** ${NC}"
+					echo -e "${RED} *** Invalid Choice *** "${NC}
 					break
 				;;    
 				esac 
@@ -296,12 +295,12 @@ f_setip () {
 	f_dhcpserver_data() {	
 	#Check listening port 67
 		echo
-		echo -e "${YELLOW} [+] Check listen and enable on port 67..." ${NC}
+		echo -e "${YELLOW} [+] Check listen and enable on port ${BLUE}67${YELLOW}..." ${NC}
 		lsof -i :67 > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 		clear
 			echo
-			echo -e "${YELLOW}It looks like another software is listening on port 67:"${NC}
+			echo -e "${YELLOW}It looks like another software is listening on port ${BLUE}67${YELLOW}:"${NC}
 			echo
 			lsof -i :67
 			echo
@@ -358,7 +357,7 @@ f_setip () {
 	#Confirm data from user
 		f_dhcpserver_confirmdata() {
 		echo
-		echo -e -n "${YELLOW}Please confirm again [YES/NO]: ${NC}"
+		echo -e -n "${YELLOW}Please confirm again [YES/NO]: "${NC}
 				read dhcpserver_confirmdata
 				echo
 			case $dhcpserver_confirmdata in
@@ -406,29 +405,29 @@ f_setip () {
 				break
 				;;
 				no|No|NO|n|N)
-					echo -e "${BLUE}Alright, slow down. Let's try again!${NC}"
+					echo -e "${BLUE}Alright, slow down. Let's try again!"${NC}
 					sleep 2
 					clear
 					f_dhcpserver_data
 				;;
 				*)
-					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+					echo -e "${RED}${BLINK} *** Invalid Entry *** "${NC}
 					echo
-					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'"${NC}
 					sleep 2
 					clear
 				#Show data for user again
 					echo
-					echo -e "${CYAN} [*] Your Input: ${NC}"
+					echo -e "${CYAN} [*] Your Input: "${NC}
 					echo
-					echo -e "${YELLOW}[+] Subnet            : $dhcp_subnet${NC}"
-					echo -e "${YELLOW}[+] Netmask           : $dhcp_netmask${NC}"
-					echo -e "${YELLOW}[+] Gateway           : $dhcp_gateway${NC}"
-					echo -e "${YELLOW}[+] DNS-1             : $dhcp_dns1${NC}"
-					echo -e "${YELLOW}[+] DNS-2             : $dhcp_dns2${NC}"
-					echo -e "${YELLOW}[+] Range IP          : $dhcp_range1 - $dhcp_range2${NC}"
-					echo -e "${YELLOW}[+] Default Lease Time: $dhcp_defaultleasetime${NC}"
-					echo -e "${YELLOW}[+] Max Lease Time    : $dhcp_maxleasetime${NC}"
+					echo -e "${YELLOW}[+] Subnet            : $dhcp_subnet"${NC}
+					echo -e "${YELLOW}[+] Netmask           : $dhcp_netmask"${NC}
+					echo -e "${YELLOW}[+] Gateway           : $dhcp_gateway"${NC}
+					echo -e "${YELLOW}[+] DNS-1             : $dhcp_dns1"${NC}
+					echo -e "${YELLOW}[+] DNS-2             : $dhcp_dns2"${NC}
+					echo -e "${YELLOW}[+] Range IP          : $dhcp_range1 - $dhcp_range2"${NC}
+					echo -e "${YELLOW}[+] Default Lease Time: $dhcp_defaultleasetime"${NC}
+					echo -e "${YELLOW}[+] Max Lease Time    : $dhcp_maxleasetime"${NC}
 					echo
 					f_dhcpserver_confirmdata
 				;;
@@ -441,7 +440,7 @@ f_setip () {
 	;;
 	*)
 			echo
-			echo -e "${RED} *** Invalid Choice *** ${NC}"
+			echo -e "${RED} *** Invalid Choice *** "${NC}
 			break
 			;;
 		esac
@@ -459,11 +458,11 @@ f_setip () {
 f_putty() {
 		clear
 		echo
-		echo -e "${YELLOW}  Follow the instructions below to connect to Linux Server (SSH) in Windows Environment via PuTTY:${NC}"
+		echo -e "${YELLOW}  Follow the instructions below to connect to Linux Server (SSH) in Windows Environment via PuTTY:"${NC}
 		echo
-		echo -e "${BLUE} [+] Step 1: ${YELLOW}Download PuTTY${BLUE}(https://www.putty.org)${YELLOW}, use key combination (Windows + R) and type: ${BLUE}putty${YELLOW}.${NC}"
-		echo -e "${BLUE} [+] Step 2: ${YELLOW}Input the target IP (SSH) and click Open.${NC}"
-		echo -e "${BLUE} [+] Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account.${NC}"
+		echo -e "${BLUE} [+] Step 1: ${YELLOW}Download PuTTY${BLUE}(https://www.putty.org)${YELLOW}, use key combination (Windows + R) and type: ${BLUE}putty${YELLOW}."${NC}
+		echo -e "${BLUE} [+] Step 2: ${YELLOW}Input the target IP (SSH) and click Open."${NC}
+		echo -e "${BLUE} [+] Step 3: ${YELLOW}Click 'Yes' if you see the notice then log-in your account."${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -476,12 +475,12 @@ f_putty() {
 f_hostname() {
 		clear
 		echo
-		echo -e -n "${YELLOW}Input new hostname: ${NC}"
+		echo -e -n "${YELLOW}Input new hostname: "${NC}
 		read hostname
 		hostnamectl set-hostname $hostname
 		clear
 		echo
-		echo -e "${YELLOW}Here is your new hostname: ${NC}" 
+		echo -e "${YELLOW}Here is your new hostname: "${NC} 
 		echo
 		hostname
 		echo
@@ -497,13 +496,13 @@ f_newuser() {
 		clear
 	#Single User
 		echo
-		echo -e "${BLUE} Input New User Information: ${NC}"
+		echo -e "${BLUE} Input New User Information: "${NC}
 		echo
-		echo -e -n "${YELLOW}   [+] Enter Fullname: ${NC}"
+		echo -e -n "${YELLOW}   [+] Enter Fullname: "${NC}
 		read fullname
-		echo -e -n "${YELLOW}   [+] Enter Username: ${NC}"
+		echo -e -n "${YELLOW}   [+] Enter Username: "${NC}
 		read username
-		echo -e -n "${YELLOW}   [+] New Password  : ${NC}"
+		echo -e -n "${YELLOW}   [+] New Password  : "${NC}
 		read password
 		useradd -m $username -c "$fullname"
 		echo "$username:$password" | chpasswd
@@ -515,26 +514,26 @@ f_newuser() {
 	#Ask for sudoer privilege
 		f_answersudo () {
 			echo
-			echo -e -n "${YELLOW}Do you want to add user ${BLUE}'$username'${YELLOW} to group sudoers(wheel)? [YES/NO]: ${NC}"
+			echo -e -n "${YELLOW}Do you want to add user ${BLUE}'$username'${YELLOW} to group sudoers(wheel)? [YES/NO]: "${NC}
 				read answersudo
 				echo
 				clear
 				echo
 			case $answersudo in
 				yes|Yes|YES|y|Y)
-					echo -e "${YELLOW}Here is user ${BLUE}'$username'${YELLOW} information details: ${NC}"
+					echo -e "${YELLOW}Here is user ${BLUE}'$username'${YELLOW} information details: "${NC}
 					echo
 					usermod -aG wheel $username; id $username; grep "$username" /etc/passwd
 					echo
-					echo -e "${YELLOW}Welldone, added user ${BLUE}'$username'${YELLOW} to group sudoers(wheel) successfully!${NC}"
+					echo -e "${YELLOW}Welldone, added user ${BLUE}'$username'${YELLOW} to group sudoers(wheel) successfully!"${NC}
 					;;
 				no|No|NO|n|N)
-					echo -e "${YELLOW}Welldone, created user ${BLUE}'$username'${YELLOW} successfully!${NC}"
+					echo -e "${YELLOW}Welldone, created user ${BLUE}'$username'${YELLOW} successfully!"${NC}
 					;;
 				*)
-					echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+					echo -e "${RED}${BLINK} *** Invalid Entry *** "${NC}
 					echo
-					echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+					echo -e "${YELLOW}Please input: 'YES' or 'NO'"${NC}
 					sleep 2
 					clear
 					f_answersudo
@@ -564,9 +563,9 @@ f_timedate() {
 			"Manual")
 				clear
 				echo
-				echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): ${NC}"
+				echo -e -n "${YELLOW}Input Date (Example: 2019-10-23): "${NC}
 				read date
-				echo -e -n "${YELLOW}Input Time (Example: 19:30:50)  : ${NC}"
+				echo -e -n "${YELLOW}Input Time (Example: 19:30:50)  : "${NC}
 				read time
 				timedatectl set-ntp false
 				timedatectl set-local-rtc 0
@@ -575,7 +574,7 @@ f_timedate() {
 				timedatectl set-timezone Asia/Ho_Chi_Minh
 				clear
 				echo
-				echo -e "${YELLOW} Here is your new time & date status: ${NC}"
+				echo -e "${YELLOW} Here is your new time & date status: "${NC}
 				echo
 				date
 				break
@@ -583,24 +582,24 @@ f_timedate() {
 			"Automatic")
 				clear
 				echo
-				echo -e "${YELLOW} [+] Set up NTP:${NC}"
+				echo -e "${YELLOW} [+] Set up NTP:"${NC}
 				echo
 				timedatectl set-timezone Asia/Ho_Chi_Minh
 				timedatectl set-ntp 1
 				systemctl enable chronyd; systemctl start chronyd; systemctl status -l chronyd
 				echo
-				echo -e "${YELLOW}${BLINK} [*] Waiting to synchronize NTP...${NC}"
+				echo -e "${YELLOW}${BLINK} [*] Waiting to synchronize NTP..."${NC}
 				sleep 10
 				clear
 				echo
-				echo -e "${YELLOW} Here is your new time & date status: ${NC}"
+				echo -e "${YELLOW} Here is your new time & date status: "${NC}
 				echo
 				timedatectl status
 				break
 			;;
 			*)
 				echo
-				echo -e "${RED} *** Invalid Choice *** ${NC}"
+				echo -e "${RED} *** Invalid Choice *** "${NC}
 				break
 			;;
 		esac
@@ -619,15 +618,15 @@ f_timedate() {
 f_newlvm() {
 		clear
 		echo
-		echo -e "${BLUE}Your disk information:${NC}"
+		echo -e "${BLUE}Your disk information:"${NC}
 		echo
 		fdisk -l | grep "/dev/s" #Check disk device information
 		echo
-		echo -e "${YELLOW}*Make sure you was added ${BLUE}a new Hard Disk ${YELLOW}and located it done (fdisk -l). ${NC}"
+		echo -e "${YELLOW}*Make sure you was added ${BLUE}a new Hard Disk ${YELLOW}and located it done (fdisk -l). "${NC}
 		echo
-		echo -e -n "${YELLOW}Enter disk name (Example: sdb): ${NC}"
+		echo -e -n "${YELLOW}Enter disk name (Example: ${BLUE}sdb${YELLOW}): "${NC}
 		read newdisk
-		echo -e -n "${YELLOW}Enter disk space (Example: +100M): ${NC}"
+		echo -e -n "${YELLOW}Enter disk space (Example: ${BLUE}+100M${YELLOW}): "${NC}
 		read space
 	#Create partition and set to Linux LVM (8e)
 		echo "n
@@ -642,26 +641,26 @@ f_newlvm() {
 	#Show partition
 		clear
 		echo
-		echo -e "${YELLOW}Here is the disk ${BLUE}(/dev/$newdisk)${YELLOW} partitions details:${NC}"
+		echo -e "${YELLOW}Here is the disk ${BLUE}(/dev/$newdisk)${YELLOW} partitions details:"${NC}
 		echo
 		fdisk -l | grep "/dev/$newdisk"
 		echo
 	#Identified the new disk info
-		echo -e -n "${YELLOW}[+] Input the disk partition to create LVM (Example: ${BLUE}sdb1${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the disk partition to create LVM (Example: ${BLUE}sdb1${YELLOW}): "${NC}
 		read diskinfo
 	#Create Physical Volume
 		pvcreate /dev/$diskinfo
 		echo
 	#Create Volume Group
-		echo -e -n "${YELLOW}[+] Input the volume group name (Example: ${BLUE}VGDATA${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the volume group name (Example: ${BLUE}VGDATA${YELLOW}): "${NC}
 		read vgdata
 		vgcreate $vgdata /dev/$diskinfo
 		echo
 	#Create Logical Volume
-		echo -e -n "${YELLOW}[+] Input the logical volume name (Example: ${BLUE}LVDATA${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the logical volume name (Example: ${BLUE}LVDATA${YELLOW}): "${NC}
 		read lvdata
 		echo
-		echo -e -n "${YELLOW}[+] Input the logical volume space (Example: ${BLUE}25%,50%,...${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}[+] Input the logical volume space (Example: ${BLUE}25%,50%,...${YELLOW}): "${NC}
 		read lvspace
 		lvcreate -n $lvdata -l ${lvspace}FREE $vgdata
 	#Config after
@@ -671,7 +670,7 @@ f_newlvm() {
 		mount -a
 		clear
 		echo
-		echo -e "${YELLOW}Here is the new Logical Volume Managent (LVM) information: ${NC}"
+		echo -e "${YELLOW}Here is the new Logical Volume Managent (LVM) information: "${NC}
 		echo
 	#Check data correctly
 		df -h /dev/mapper/$vgdata-$lvdata
@@ -688,32 +687,32 @@ f_openservice() {
 		clear
 	#Check install Firewalld
 		echo
-		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Firewalld${YELLOW}... ${NC}"
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Firewalld${YELLOW}... "${NC}
 		echo
 	#Force stop YUM
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q firewalld; yum update -y -q firewalld
 		clear
 	#Add single service
 		echo
-		echo -e -n "${YELLOW}Input service to enable (Example: ${BLUE}'http' ${YELLOW}or ${BLUE}'ftp'${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}Input service to enable (Example: ${BLUE}'http' ${YELLOW}or ${BLUE}'ftp'${YELLOW}): "${NC}
 		read service
 		firewall-cmd --add-service=$service --permanent; firewall-cmd --reload
 		echo
-		echo -e -n "${YELLOW}Input port to enable (Example: ${BLUE}'21' ${YELLOW}or ${BLUE}'2022'${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}Input port to enable (Example: ${BLUE}'21' ${YELLOW}or ${BLUE}'2022'${YELLOW}): "${NC}
 		read service_port
 		echo
-		echo -e -n "${YELLOW}Input your protocol (Example: ${BLUE}tcp, udp, sctp, dccp${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW}Input your protocol (Example: ${BLUE}tcp, udp, sctp, dccp${YELLOW}): "${NC}
 		read service_protocol
 		firewall-cmd --add-port=${service_port}/${service_protocol} --permanent; firewall-cmd --reload
 	#Restart firewalld
 		clear
 		echo
-		echo -e "${YELLOW}Firewalld.service status:${NC}"
+		echo -e "${YELLOW}Firewalld.service status:"${NC}
 		echo		
 		systemctl enable firewalld; systemctl restart firewalld; systemctl status firewalld;
 		echo
 	#Checking services added
-		echo -e "${YELLOW}Lists your current services running:${NC}"
+		echo -e "${YELLOW}Lists your current services running:"${NC}
 		echo
 		firewall-cmd --list-services; firewall-cmd --list-ports
 		echo
@@ -729,7 +728,7 @@ f_webserver() {
 		clear
 	#Install Basic Web Server & Elinks package
 		echo
-		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}"Basic Web Server"${YELLOW} and ${BLUE}Elinks${YELLOW}...${NC}"
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}"Basic Web Server"${YELLOW} and ${BLUE}Elinks${YELLOW}..."${NC}
 		echo
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q dnf; yum update -y -q dnf
 		dnf groupinstall -y -q "Basic Web Server";dnf groupupdate -y -q "Basic Web Server"
@@ -737,19 +736,19 @@ f_webserver() {
 		clear
 	#Backup file httpd.conf && Create Basic Index.html
 		echo
-		echo -e "${YELLOW} [+] Back up file httpd.conf & Create Index.html ${BLUE}(/var/www/html/index.html)${YELLOW}.${NC}"
+		echo -e "${YELLOW} [+] Back up file httpd.conf & Create Index.html ${BLUE}(/var/www/html/index.html)${YELLOW}."${NC}
 		cp -a /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bk
 		echo
-		echo -e -n "${YELLOW} [+] Input data to index file (Example: ${BLUE}Hello World!${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW} [+] Input data to index file (Example: ${BLUE}Hello World!${YELLOW}): "${NC}
 		read web_data
 		echo "$web_data" > /var/www/html/index.html
 	#Restart httpd service
 		systemctl start httpd; systemctl enable httpd; systemctl restart httpd
 		clear
-		echo -e "${YELLOW}  Alright, 2 ways to see the result: ${NC}"
+		echo -e "${YELLOW}  Alright, 2 ways to see the result: "${NC}
 		echo
-		echo -e "${YELLOW} [+] Open new tab and type: ${BLUE}elinks http://localhost. ${NC}"
-		echo -e "${YELLOW} [+] Open Web Browser and redirect to: ${BLUE}http://localhost. ${NC}"
+		echo -e "${YELLOW} [+] Open new tab and type: ${BLUE}elinks http://localhost. "${NC}
+		echo -e "${YELLOW} [+] Open Web Browser and redirect to: ${BLUE}http://localhost. "${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -763,43 +762,43 @@ f_anon_dropbox() {
 		clear
 	#Install VSFTPD package
 		echo
-		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}VSFTPD${YELLOW}...${NC}"
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}VSFTPD${YELLOW}..."${NC}
 		echo
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q vsftpd; yum update -y -q vsftpd
 		echo
 		clear
 	#Config Firewalld to add FTP service
 		echo
-		echo -e "${YELLOW}[+] Add ${BLUE}FTP ${YELLOW}service from Firewalld.${NC}"
+		echo -e "${YELLOW}[+] Add ${BLUE}FTP ${YELLOW}service from Firewalld."${NC}
 		firewall-cmd --zone=public --permanent --add-service=ftp
 		firewall-cmd --reload
 		echo
 	#Create a rule for firewall to allow FTP traffic on Port 21
-		echo -e "${YELLOW}[+] Enable Port ${BLUE}21${YELLOW}.${NC}"
+		echo -e "${YELLOW}[+] Enable Port ${BLUE}21${YELLOW}."${NC}
 		firewall-cmd --zone=public --permanent --add-port=21/tcp
 		firewall-cmd --reload
 		echo
 	#Check the FTP service and port was added
-		echo -e "${YELLOW}[+] Check lists current services running.${NC}"
+		echo -e "${YELLOW}[+] Check lists current services running."${NC}
 		firewall-cmd --list-services | grep "ftp"
 		firewall-cmd --list-ports | grep "21"
 		echo
 	#Create backup vsftpd.conf file (.bk)
-		echo -e "${YELLOW}[+] Create backup ${BLUE}vsftpd.conf ${YELLOW}file.${NC}"
+		echo -e "${YELLOW}[+] Create backup ${BLUE}vsftpd.conf ${YELLOW}file."${NC}
 		cp -a /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bk
 		echo
 	#Create Uploads Folder
-		echo -e "${YELLOW}[+] The FTP Server uses the directory (/var/ftp) as the default document root.${NC}"
-		echo -e "${YELLOW}    Create a sub-directory with the name ${BLUE}'uploads' ${YELLOW}(/var/ftp/uploads).${NC}"
+		echo -e "${YELLOW}[+] The FTP Server uses the directory (/var/ftp) as the default document root."${NC}
+		echo -e "${YELLOW}    Create a sub-directory with the name ${BLUE}'uploads' ${YELLOW}(/var/ftp/uploads)."${NC}
 		rm -rf /var/ftp/uploads; mkdir /var/ftp/uploads
 		echo
 	#Give permissions for Shared Folder | -rwx-wx---
-		echo -e "${YELLOW}[+] Set permission (Users can write, but they can't read them). ${NC}"
+		echo -e "${YELLOW}[+] Set permission (Users can write, but they can't read them). "${NC}
 		chmod 0730 /var/ftp/uploads
 		echo
 	#Set the group owner to group FTP
 		chgrp ftp /var/ftp/uploads
-		echo -e "${YELLOW}[+] Set the group owner to ${BLUE}'FTP'${YELLOW}. ${NC}"
+		echo -e "${YELLOW}[+] Set the group owner to ${BLUE}'FTP'${YELLOW}. "${NC}
 		echo
 	#Edit file vsftpd.conf
 		echo "#Set up FTP Anonymous Drop Box
@@ -809,7 +808,7 @@ f_anon_dropbox() {
 			chown_uploads=YES
 			chown_username=root" >> /etc/vsftpd/vsftpd.conf
 	#Restart VSFTPD service
-		echo -e "${YELLOW}[+] VSFTPD service status:${NC}"
+		echo -e "${YELLOW}[+] VSFTPD service status:"${NC}
 		echo
 		systemctl enable vsftpd; systemctl start vsftpd; systemctl restart vsftpd; systemctl status vsftpd
 	#Config Semanage
@@ -824,16 +823,16 @@ f_anon_dropbox() {
 		clear
 	#Test the result
 		echo
-		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
+		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:"${NC}
 		echo
-		echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server and type:${BLUE} yum install -y lftp${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 2: Then type: ${BLUE}lftp (FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10.${NC}"
-		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ls -l /var/ftp/uploads/${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts)${YELLOW}.${NC}"
-		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, un-install VSFTPD and try again)${NC}"
-		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog${YELLOW}.${NC}"
+		echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server and type:${BLUE} yum install -y lftp${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 2: Then type: ${BLUE}lftp (FTP Server IP)${YELLOW} - Example: lftp 192.168.1.10."${NC}
+		echo -e "${YELLOW}	[+] Step 3: After connect to FTP Server, type: ${BLUE}ls${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 4: Then type: ${BLUE}cd uploads/; put /etc/hosts${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 5: Back to FTP Server, type: ${BLUE}ls -l /var/ftp/uploads/${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 6: If you see the information the same with this ${BLUE}(-rw-------. 1 root ftp 204 Oct 26 17:31 hosts)${YELLOW}."${NC}
+		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, un-install VSFTPD and try again)"${NC}
+		echo -e "${YELLOW}	[+] Step 7: To check FTP Server log details, type: ${BLUE}cat /var/log/xferlog${YELLOW}."${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -851,11 +850,11 @@ f_apache() {
 		setenforce 0
 	#Get IP server from User
 		echo
-		echo -e -n "${YELLOW}[+] Input your IP: ${NC}"
+		echo -e -n "${YELLOW}[+] Input your IP: "${NC}
 		read webserverip
 		echo
 	#Backup and config file /etc/hosts
-		echo -e "${YELLOW} [+] Backup & Config files hosts (/etc/hosts) ${NC}"
+		echo -e "${YELLOW} [+] Backup & Config files hosts (/etc/hosts) "${NC}
 		cp -a /etc/hosts /etc/hosts.bk
 		echo "$webserverip server1.example.com server1
 		$webserverip account.example.com account
@@ -891,7 +890,7 @@ f_apache() {
 	#Restart httpd service
 		clear
 		echo
-		echo -e "${YELLOW} [+] Here is HTTPD service status: ${NC}"
+		echo -e "${YELLOW} [+] Here is HTTPD service status: "${NC}
 		echo
 		systemctl restart httpd; systemctl enable httpd; systemctl status httpd
 		echo
@@ -901,24 +900,24 @@ f_apache() {
 		clear
 	#Check getenforce status
 		echo
-		echo -e "${YELLOW} [+] Getenforce status: ${NC}"
+		echo -e "${YELLOW} [+] Getenforce status: "${NC}
 		echo
-		getenforce; setenforce Enforcing #Switch on SELinux
+		setenforce Enforcing; getenforce #Switch on SELinux
 	#Config semanage
 		semanage fcontext -a -t httpd_sys_content_t "/www/docs(/.*)?"
 		restorecon -Rv /www/docs
 		clear
 	#Create Group Webdev
 		echo
-		echo -e "${YELLOW} [+] Create group Web Development (webdev). ${NC}"
+		echo -e "${YELLOW} [+] Create group Web Development (webdev). "${NC}
 		echo
 		groupadd webdev
 	#Set ACLs to make sure members of the group webdev have access to the document root
 		setfacl -R -m g:webdev:rwx /www/docs; setfacl -R -m d:g:webdev:rwx /www/docs
 	#Add new user and add to group webdev
-		echo -e -n "${YELLOW} [+] Input new user to create and add to group ${BLUE}'webdev'${YELLOW}: ${NC}"
+		echo -e -n "${YELLOW} [+] Input new user to create and add to group ${BLUE}'webdev'${YELLOW}: "${NC}
 		read webdev_newuser
-		echo -e -n "${YELLOW} [+] Input new password for ${BLUE}'$webdev_newuser'${YELLOW}: ${NC}"
+		echo -e -n "${YELLOW} [+] Input new password for ${BLUE}'$webdev_newuser'${YELLOW}: "${NC}
 		read webdev_password
 		useradd -m $webdev_newuser
 		echo "$webdev_newuser:$webdev_password" | chpasswd
@@ -927,23 +926,23 @@ f_apache() {
 		echo
 		clear
 		echo
-		echo -e "${YELLOW}   Follow the instructions below to check the result:${NC}"
+		echo -e "${YELLOW}   Follow the instructions below to check the result:"${NC}
 		echo
-		echo -e "${YELLOW} [*] Open new tab and type: ${BLUE}"su - $webdev_newuser"${YELLOW}.${NC}"
-		echo -e "${YELLOW}     Then type: ${BLUE}touch /www/docs/$webdev_newuser.html${YELLOW} to verify write access. ${NC}"
+		echo -e "${YELLOW} [*] Open new tab and type: ${BLUE}"su - $webdev_newuser"${YELLOW}."${NC}
+		echo -e "${YELLOW}     Then type: ${BLUE}touch /www/docs/$webdev_newuser.html${YELLOW} to verify write access. "${NC}
 		echo
 		echo
 		echo -e "$PAKTC"
 		$READAK
 		clear
 	#Restart service httpd
-		echo -e "${YELLOW}${BLINK} [+] Restarting HTTPD service... ${NC}"
+		echo -e "${YELLOW}${BLINK} [+] Restarting HTTPD service... "${NC}
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; yum install -y -q httpd-manual; yum update -y -q httpd-manual
 		systemctl restart httpd; systemctl enable httpd
 		clear
 	#Open HTTPD Manual
 		echo
-		echo -e "${YELLOW} [+] Open new tab and type: ${BLUE}elinks http://localhost/manual${YELLOW} to check the result.${NC}"
+		echo -e "${YELLOW} [+] Open new tab and type: ${BLUE}elinks http://localhost/manual${YELLOW} to check the result."${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -958,33 +957,30 @@ f_dns_unbound() {
 		clear
 	#Check listening port 53
 		echo
-		echo -e "${YELLOW}${BLINK} [+] Check listening on port 53..." ${NC}
+		echo -e "${YELLOW}${BLINK} [+] Check listening on port ${CYAN}53${YELLOW}..." ${NC}
 		lsof -i :53 > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 		clear
 			echo
-			echo -e "${YELLOW}It looks like another software is listening on port 53:"${NC}
+			echo -e "${YELLOW}It looks like another software is listening on port ${CYAN}53${YELLOW}:"${NC}
 			echo
 			lsof -i :53
+			netstat -lnup | grep 53
 			echo
-			echo -e "${YELLOW}Please disable or uninstall it before installing unbound ${BLUE}(kill -9 PID)${YELLOW}."${NC}
+			echo -e "${YELLOW}Please disable or uninstall it before installing Unbound ${BLUE}(kill -9 PID)${YELLOW}."${NC}
 			while [[ $CONTINUE != "Y" && $CONTINUE != "N" ]]; do
 			echo
 			read -rp "Do you still want to run the script? Unbound might not work... [Y/N]: " -e CONTINUE
 			done
 			if [[ "$CONTINUE" = "N" ]]; then
 				echo
-				echo
-				echo -e "$PAKTGB"
-				$READAK
-				echo
 				exit 2
 			fi
 		fi
-	#Check unbound Firewalld
+	#Install Unbound Firewalld
 		clear
 		echo
-		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Unbound${YELLOW}... ${NC}"
+		echo -e "${YELLOW}${BLINK}[+] Installing ${BLUE}Unbound${YELLOW}... "${NC}
 		echo
 		kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1`
 		yum remove unbound -y -q; yum remove bind -y -q; yum install -y -q unbound; yum update -y -q unbound
@@ -992,15 +988,15 @@ f_dns_unbound() {
 		clear
 	#Backup and edit unbound.conf
 		echo
-		echo -e -n "${YELLOW} [+] Input your IP subnet (Example: ${BLUE}192.168.1.0${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW} [+] Input your IP subnet (Example: ${BLUE}192.168.1.0${YELLOW}): "${NC}
 		read unbound_ipsubnet
 		echo
-		echo -e -n "${YELLOW} [+] Input your Prefix (Example: ${BLUE}24${YELLOW}): ${NC}"
+		echo -e -n "${YELLOW} [+] Input your Prefix (Example: ${BLUE}24${YELLOW}): "${NC}
 		read unbound_prefix
 		
 		clear
 		echo
-		echo -e "${YELLOW} [+] Backup and config file unbound.conf ${BLUE}(/etc/unbound/unbound.conf)${YELLOW}. ${NC}"
+		echo -e "${YELLOW} [+] Backup and config file unbound.conf ${BLUE}(/etc/unbound/unbound.conf)${YELLOW}. "${NC}
 		cp -a /etc/unbound/unbound.conf /etc/unbound/unbound.conf.bk
 		sed -i 's|# interface: 0.0.0.0$|interface: 0.0.0.0|' /etc/unbound/unbound.conf
 		sed -i 's|# access-control: 127|access-control: 127|' /etc/unbound/unbound.conf
@@ -1019,25 +1015,25 @@ f_dns_unbound() {
 	#Restart service Unbound
 		clear
 		echo
-		echo -e "${YELLOW} [+] Unbound service status: ${NC}"
+		echo -e "${YELLOW} [+] Unbound service status: "${NC}
 		echo
 		systemctl enable unbound; systemctl restart unbound; systemctl status unbound
 		netstat -nlpt | grep 53
 		echo
 	#Open DNS on firewalld
-		echo -e "${YELLOW} [+] Enable DNS (firewalld): ${NC}"
+		echo -e "${YELLOW} [+] Enable DNS (firewalld): "${NC}
 		echo
 		firewall-cmd --permanent --add-service=dns; firewall-cmd --reload; firewall-cmd --list-services
 	#Check the result
 		clear
 		echo
-		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:${NC}"
+		echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly:"${NC}
 		echo
-		echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server (Server2) and start ${BLUE}'nmtui'${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on Unbound Server (Primary Server).${NC}"
-		echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig example.com${YELLOW}.${NC}"
-		echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
-		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
+		echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server (Server2) and start ${BLUE}'nmtui'${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on Unbound Server (Primary Server)."${NC}
+		echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig example.com${YELLOW}."${NC}
+		echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server."${NC}
+		echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)"${NC}
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -1049,17 +1045,40 @@ f_dns_unbound() {
 #Exercise 12: Install BIND and DNS packages
 f_dns_bind() {
 		clear
+		#Check listening port 53
+		echo
+		echo -e "${YELLOW}${BLINK} [+] Check listening on port ${CYAN}53${YELLOW}..." ${NC}
+		lsof -i :53 > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+		clear
+			echo
+			echo -e "${YELLOW}It looks like another software is listening on port ${CYAN}53${YELLOW}:"${NC}
+			echo
+			lsof -i :53
+			netstat -lnup | grep 53
+			echo
+			echo -e "${YELLOW}Please disable or uninstall it before installing Bind ${BLUE}(kill -9 PID)${YELLOW}."${NC}
+			while [[ $CONTINUE != "Y" && $CONTINUE != "N" ]]; do
+			echo
+			read -rp "Do you still want to run the script? Bind might not work... [Y/N]: " -e CONTINUE
+			done
+			if [[ "$CONTINUE" = "N" ]]; then
+				echo
+				exit 2
+			fi
+		fi
+		clear
+		#Choose between 2 server (Primary and Secondary)
 		echo
 		echo -e "${YELLOW} [*] Choose your current running server:"${NC}
 		echo
-	#Choose between 2 server (Primary and Secondary)
 		select bind_server in "Primary Server" "Secondary Server"
 		do
 		case $bind_server in
 			"Primary Server")
 				clear
 				echo
-				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
+				echo -e "${YELLOW}${BLINK} [-] Removing ${BLUE}Unbound${YELLOW} & ${BLUE}Old Bind${YELLOW} service..." ${NC}
 				echo
 				kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; 
 				yum remove unbound -y -q; yum remove bind -y -q
@@ -1071,19 +1090,19 @@ f_dns_bind() {
 				yum install -y -q bind bind-utils; yum update -y -q bind bind-utils
 				clear
 				echo
-				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. ${NC}"
+				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. "${NC}
 				echo
 				cp -a /etc/named.conf /etc.named.conf.bk
 			#Get IP from user
 				clear
 				echo
-				echo -e -n "${YELLOW} [+] Input Primary Server IP  : ${NC}"
+				echo -e -n "${YELLOW} [+] Input Primary Server IP  : "${NC}
 				read bind_server1_ip
-				echo -e -n "${YELLOW} [+] Input Secondary Server IP: ${NC}"
+				echo -e -n "${YELLOW} [+] Input Secondary Server IP: "${NC}
 				read bind_server2_ip
-				echo -e -n "${YELLOW} [+] Input Domain Name Primary Server (Example: ${BLUE}fptjetking1${YELLOW}): ${NC}"
+				echo -e -n "${YELLOW} [+] Input Domain Name Primary Server (Example: ${BLUE}fptjetking1${YELLOW}): "${NC}
 				read bind_domain_1
-				echo -e -n "${YELLOW} [+] Input Domain Name Secondary Server (Example: ${BLUE}fptjetking2${YELLOW}): ${NC}"
+				echo -e -n "${YELLOW} [+] Input Domain Name Secondary Server (Example: ${BLUE}fptjetking2${YELLOW}): "${NC}
 				read bind_domain_2
 				reverse_ip=$(echo "$bind_server1_ip" | awk -F. -vOFS=. '{print $3,$2,$1,"in-addr.arpa"}')
 				clear
@@ -1164,6 +1183,12 @@ echo "\$ORIGIN ${reverse_ip}.
 			#Checks the syntax and integrity of a zone file:
 				named-checkzone example.com /var/named/example.com.zone;
 				named-checkzone ${reverse_ip} /var/named/example.com.rr.zone
+			#Config SELinux, Permissions, Ownership:	
+				echo
+				chgrp named -R /var/named
+				chown -v root:named /etc/named.conf
+				restorecon -Rv /var/named
+				restorecon /etc/named.conf
 				echo
 				clear
 			#Enable Named service:
@@ -1172,7 +1197,7 @@ echo "\$ORIGIN ${reverse_ip}.
 				systemctl enable named; systemctl restart named; systemctl status named
 				echo
 			#Add DNS service:
-				echo -e "${YELLOW}Lists your current services running:${NC}"
+				echo -e "${YELLOW}Lists your current services running:"${NC}
 				echo
 				firewall-cmd --add-service=dns --permanent; firewall-cmd --reload; firewall-cmd --list-services
 				echo
@@ -1213,9 +1238,9 @@ echo "\$ORIGIN ${reverse_ip}.
 						echo
 						;;
 					*)
-						echo -e "${RED}${BLINK} *** Invalid Entry *** ${NC}"
+						echo -e "${RED}${BLINK} *** Invalid Entry *** "${NC}
 							echo
-							echo -e "${YELLOW}Please input: 'YES' or 'NO'${NC}"
+							echo -e "${YELLOW}Please input: 'YES' or 'NO'"${NC}
 							sleep 2
 							clear
 						f_blockweb
@@ -1226,20 +1251,20 @@ echo "\$ORIGIN ${reverse_ip}.
 				#Check the result
 				clear
 				echo
-				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Primary Nameserver):${NC}"
+				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Primary Nameserver):"${NC}
 				echo
-				echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server (Server2) and start ${BLUE}'nmtui'${YELLOW}.${NC}"
-				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${bind_server1_ip}.${NC}"
-				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_1}.example.com${YELLOW}.${NC}"
-				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
-				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
+				echo -e "${YELLOW}	[+] Step 1: Log-in Secondary Server (Server2) and start ${BLUE}'nmtui'${YELLOW}."${NC}
+				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${CYAN}${bind_server1_ip}${YELLOW}."${NC}
+				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_1}.example.com${YELLOW}."${NC}
+				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Bind Primary Server."${NC}
+				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)"${NC}
 				break
 		;;
 	#Set up Secondary Nameserver
 		"Secondary Server")
 				clear
 				echo
-				echo -e "${YELLOW}${BLINK} [-] Removing Unbound & Old Bind service..." ${NC}
+				echo -e "${YELLOW}${BLINK} [-] Removing ${BLUE}Unbound${YELLOW} & ${BLUE}Old Bind${YELLOW} service..." ${NC}
 				echo
 				kill -9 `ps -aux | grep yum |tr -s " " : | cut -f2 -d : | head -1` ; 
 				yum remove unbound -y -q; yum remove bind -y -q
@@ -1251,19 +1276,19 @@ echo "\$ORIGIN ${reverse_ip}.
 				yum install -y -q bind bind-utils; yum update -y -q bind bind-utils
 				clear
 				echo
-				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. ${NC}"
+				echo -e "${YELLOW} [+] Backup and config file named.conf ${BLUE}(/etc/named.conf)${YELLOW}. "${NC}
 				cp -a /etc/named.conf /etc.named.conf.bk
 				echo
 			#Get IP from user
 				clear
 				echo
-				echo -e -n "${YELLOW} [+] Input Primary Server IP: ${NC}"
+				echo -e -n "${YELLOW} [+] Input Primary Server IP: "${NC}
 				read bind_server1_ip
-				echo -e -n "${YELLOW} [+] Input Secondary Server IP: ${NC}"
+				echo -e -n "${YELLOW} [+] Input Secondary Server IP: "${NC}
 				read bind_server2_ip
-				echo -e -n "${YELLOW} [+] Input Domain Name Primary Server (Example: ${BLUE}fptjetking1${YELLOW}): ${NC}"
+				echo -e -n "${YELLOW} [+] Input Domain Name Primary Server (Example: ${BLUE}fptjetking1${YELLOW}): "${NC}
 				read bind_domain_1
-				echo -e -n "${YELLOW} [+] Input Domain Name Secondary Server (Example: ${BLUE}fptjetking2${YELLOW}): ${NC}"
+				echo -e -n "${YELLOW} [+] Input Domain Name Secondary Server (Example: ${BLUE}fptjetking2${YELLOW}): "${NC}
 				read bind_domain_2
 				reverse_ip=$(echo "$bind_server1_ip" | awk -F. -vOFS=. '{print $3,$2,$1,"in-addr.arpa"}')
 				clear
@@ -1287,6 +1312,13 @@ masters {${bind_server1_ip};};
 };" >> /etc/named.conf
 			#Checks the syntax of named.conf:
 				named-checkconf /etc/named.conf
+			#Config SELinux, Permissions, Ownership:	
+				echo
+				chgrp named -R /var/named
+				chown -v root:named /etc/named.conf
+				restorecon -Rv /var/named
+				restorecon /etc/named.conf
+				echo	
 				echo
 				clear
 			#Enable Named service:
@@ -1295,7 +1327,7 @@ masters {${bind_server1_ip};};
 				systemctl enable --now named; systemctl restart named; systemctl status named
 				echo
 			#Add DNS service:
-				echo -e "${YELLOW}Lists your current services running:${NC}"
+				echo -e "${YELLOW}Lists your current services running:"${NC}
 				echo
 				firewall-cmd --add-service=dns --permanent; firewall-cmd --reload; firewall-cmd --list-services
 			#Check Zone-transfer
@@ -1310,19 +1342,19 @@ masters {${bind_server1_ip};};
 			#Check the result
 				clear
 				echo
-				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Secondary Nameserver):${NC}"
+				echo -e "${YELLOW}   Follow the instructions below to make sure everything is set up correctly (Secondary Nameserver):"${NC}
 				echo
-				echo -e "${YELLOW}	[+] Step 1: Open new tab and type: ${BLUE}'nmtui'${YELLOW}.${NC}"
-				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${bind_server2_ip}.${NC}"
-				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_2}.example.com${YELLOW}.${NC}"
-				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Unbound Server.${NC}"
-				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)${NC}"
+				echo -e "${YELLOW}	[+] Step 1: Log-in Primary Server (Server1) and start ${BLUE}'nmtui'${YELLOW}."${NC}
+				echo -e "${YELLOW}	[+] Step 2: Configure the DNS server listening on ${bind_server2_ip}."${NC}
+				echo -e "${YELLOW}	[+] Step 3: After that, type: ${BLUE}dig ${bind_domain_2}.example.com${YELLOW}."${NC}
+				echo -e "${YELLOW}	[+] Step 4: If you see the answer is provided by the Bind Secondary Server."${NC}
+				echo -e "${YELLOW}	            Congratulations! Everything working perfectly. (If not, re-install and try again)"${NC}
 		break
 		;;
 	#Wrong answer	
 		*)
 			echo
-			echo -e "${RED} *** Invalid Choice *** ${NC}"
+			echo -e "${RED} *** Invalid Choice *** "${NC}
 			break
 		;;
 			esac
@@ -1431,7 +1463,7 @@ f_nfs() {
 				;;
 				*)
 					echo
-					echo -e "${RED} *** Invalid Choice *** ${NC}"
+					echo -e "${RED} *** Invalid Choice *** "${NC}
 					break
 				;;
 				esac
@@ -1468,7 +1500,7 @@ f_sambaserver() {
 				#Get user info
 					echo -e -n "${YELLOW} [+] Input new username (Example: ${BLUE}tara${YELLOW}): "${NC}
 					read samba_user
-					echo -e -n "${YELLOW} [+] Input New Password: ${NC}"
+					echo -e -n "${YELLOW} [+] Input New Password: "${NC}
 					read samba_user_passwd
 					echo -e -n "${YELLOW} [+] Input Samba group name: "${NC}
 					read samba_group
@@ -1501,7 +1533,7 @@ f_sambaserver() {
 					echo
 					echo -e "${YELLOW} [*] Choose your current running server:"${NC}
 					echo
-					########################
+					######
 				#Choose between 2 server (Primary and Secondary)
 					select smb_server in "Primary Server" "Secondary Server"
 					do
@@ -1543,7 +1575,7 @@ f_sambaserver() {
 							[sambashare]
 									comment = My Samba Share
 									path = $samba_newfolder
-									write list = @sambagroup" >> /etc/samba/smb.conf
+									write list = @$samba_group" >> /etc/samba/smb.conf
 							echo
 						#Check verify error
 							echo -e "${YELLOW} [*] Check syntax error on ${BLUE}smb.conf${YELLOW} file."${NC}
@@ -1572,12 +1604,12 @@ f_sambaserver() {
 						#Turn off SELInux and Firewalld
 							echo
 							echo -e "${YELLOW} [-] Switch off SELinux and Firewalld." ${NC}
-							setenforce 0; getenforce; systemctl stop firewalld
+							setenforce 0; getenforce; systemctl stop firewalld; systemctl status firewalld
 						#Config Firewalld and SELinux
 							echo
 							echo -e "${YELLOW} [*] Configure Samba Server firewall and SELinux."${NC}
 							semanage fcontext -a -t samba_share_t "${samba_newfolder}(/.*)?"
-							restorecon -Rv /data/sambashare/
+							restorecon -Rv $samba_newfolder
 							echo
 						#Add SAMBA service (Firewalld)
 							echo -e "${YELLOW} [+] Add SAMBA service from Firewalld."${NC}
@@ -1646,22 +1678,22 @@ f_sambaserver() {
 							mount -a
 						#After verifying that it mounts using 'mount -a' , you can reboot server2 to verify the mount comes up after a reboot as well.
 							echo
-							echo -e "${YELLOW} [*] Try to reboot this Server and verify that the mount comes up after a reboot as well (${BLUE}/mnt/$samba_user_data${YELLOW})."${NC}
+							echo -e "${CYAN} [*] ${YELLOW}Try to reboot this Server and verify that the mount comes up after a reboot as well (${BLUE}/mnt/$samba_user_data${YELLOW})."${NC}
 					break		
 					;;
 					*)
 					echo
-					echo -e "${RED} *** Invalid Choice *** ${NC}"
+					echo -e "${RED} *** Invalid Choice *** "${NC}
 					break
 					;;    
 					esac 
 					done
-				########################
+				######
 				break
 				;;
 				*)
 				echo
-				echo -e "${RED} *** Invalid Choice *** ${NC}"
+				echo -e "${RED} *** Invalid Choice *** "${NC}
 				break
 				;; 
 			esac
@@ -1669,8 +1701,199 @@ f_sambaserver() {
 		echo
 		echo
 		echo -e "$PAKTGB"
-		$READAK
+		$READAK  
 	}	
+
+##############################################################################################################
+
+#Exercise 16: Setting up SMTP Server, configuring a Postfix Null Client Setup
+f_smtpserver() {
+		clear
+		echo
+		#Need to confirm DNS server installed before running SMTP
+		echo -e -n "${CYAN} [*] ${YELLOW}Did you installed DNS Server (Bind/Unbound)? [YES/NO]: "${NC}
+		read ask_install_dns
+		case $ask_install_dns in
+		yes|Yes|YES|y|Y)
+		;;
+		no|No|NO|n|N)
+			f_dns_bind
+		;;
+		*)
+		echo
+		echo -e "${RED} *** Invalid Choice *** ${NC}"
+		break
+		;;    
+		esac
+		#####
+		clear
+		echo
+		echo -e "${YELLOW} [*] Choose your current running server to setting up SMTP:"${NC}
+		select smtp_choose_server in "Primary Server" "Secondary Server"
+		do
+		case $smtp_choose_server in
+		"Primary Server")
+			clear
+			echo
+			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking1.example.com${YELLOW}): "${NC}
+			read smtp_server1
+			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
+			read smtp_server2
+			clear
+			echo
+			echo -e "${YELLOW} [*] Create backup and config file (${BLUE}/etc/postfix/main.cf${YELLOW})"${NC}
+			cp -a /etc/postfix/main.cf /etc/postfix/main.cf.bk
+			postconf -e 'myorigin = $mydomain'; postfix check; systemctl reload postfix
+			#Config a postfix null client setup
+			host $smtp_server2; postconf -e "relayhost = [${smtp_server2}]"
+			postconf -e 'inet_interfaces=loopback-only'
+			postconf mynetworks
+			postconf -e 'mydestination='
+			postconf -e 'inet_protocols=ipv4'
+			postconf -e 'mydomain=example.com'
+			systemctl restart postfix
+			postconf -n
+			echo
+			echo -e "${YELLOW} [*] ${RED}Stop here!${YELLOW} Run this tool on Secondary Server to install ${CYAN}SMTP${YELLOW} first."${NC}
+			echo
+			echo
+			echo -e "$PAKTC"
+			$READAK
+			clear
+			echo
+			mail -s testfile1 root@$smtp_server2 < .; tail /var/log/maillog
+			break
+		;;
+		"Secondary Server")
+			clear
+			echo
+			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking1.example.com${YELLOW}): "${NC}
+			read smtp_server1
+			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
+			read smtp_server2
+			clear
+			echo
+			echo -e "${YELLOW} [*] Create backup and config file (${BLUE}/etc/postfix/main.cf${YELLOW})"${NC}
+			cp -a /etc/postfix/main.cf /etc/postfix/main.cf.bk
+			host $smtp_server1
+			postconf -e 'inet_interfaces=all'
+			postconf -e "mydestination = example.com,${smtp_server2}"
+			postconf -e 'inet_protocols = ipv4'
+			postconf mynetworks
+			systemctl restart postfix
+			echo
+			echo -e "${YELLOW} [+] Add ${BLUE}SMTP${YELLOW} service (Firewalld)..."${NC}
+			firewall-cmd --add-service=smtp --permanent; firewall-cmd --reload;firewall-cmd --list-services
+			yum install -y -q mailx; yum update -y -q mailx
+			postconf -n
+			echo
+			echo -e "${YELLOW} [*] ${RED}Stop here!${YELLOW} Come back to ${CYAN}Primary Server${YELLOW} and finish it."${NC}
+			echo -e "${YELLOW}     After that, back to this Server and check the result."${NC}
+			echo
+			echo
+			echo -e "$PAKTC"
+			$READAK
+			clear
+			echo
+			echo -e "${YELLOW} [*] Verify that you see the test message from the Primary Server."${NC}
+			mail
+			break
+		;;
+		*)
+		echo
+		echo -e "${RED} *** Invalid Choice *** ${NC}"
+		break
+		;;    
+		esac 
+		done
+		#####
+		echo
+		echo
+		echo -e "$PAKTGB"
+		$READAK  
+}
+
+##############################################################################################################
+
+#Exercise 17: Configuring SSH Security Options (Config on SV1 and test on SV2)
+f_ssh() {
+		clear
+		echo
+		echo -e -n "${YELLOW} [+] Input new SSH Port (Example: ${BLUE}2022${YELLOW}): "${NC}
+		read ssh_secureport
+		echo -e -n "${YELLOW} [+] Input Username allow to connect via SSH: "${NC}
+		read ssh_allowuser
+		echo -e -n "${YELLOW} [+] Input this Server IP: "${NC}
+		read ssh_serverip
+		clear
+		echo
+		echo -e "${YELLOW} [+] Create backup and config file (${BLUE}/etc/ssh/sshd_config${YELLOW})."${NC} 
+		cp -a /etc/ssh/sshd_config /etc/ssh/sshd_config.bk
+echo "Port 22
+Port $ssh_secureport
+AllowUsers $ssh_allowuser" >> /etc/ssh/sshd_config
+		echo
+		systemctl restart sshd
+	#Config SELinux
+		echo -e "${YELLOW} [*] Configure SELinux:"${NC}
+		semanage port -a -t ssh_port_t -p tcp $ssh_secureport; getenforce
+		echo
+	#Add port (Firewalld)
+		echo -e "${YELLOW} [+] Enable port ${BLUE}$ssh_secureport${YELLOW} (Firewalld):"${NC}
+		firewall-cmd --add-port=${ssh_secureport}/tcp --permanent; firewall-cmd --reload
+		systemctl restart sshd; systemctl restart firewalld
+		echo
+	#Status SSHD
+		echo -e "${YELLOW} [*] SSHD status:"${NC}
+		systemctl status -l sshd
+		echo
+		echo
+		echo -e "$PAKTC"
+		read $READAK
+		clear
+		echo
+		echo -e "${YELLOW} [*] Try to log-in to SSH Server from another Server (using: ${BLUE}ssh -p $ssh_secureport $ssh_allowuser@$ssh_serverip${YELLOW})."${NC} 
+		echo -e "${YELLOW}     On SSH Server, to check SSH log, type: ${BLUE}'tail /var/log/secure'${YELLOW}."${NC}
+		echo
+		echo
+		echo -e "$PAKTGB"
+		read $READAK
+}
+
+##############################################################################################################
+
+#Exercise 18: Setting up Remote Logging on Server
+f_rsyslog() {
+		clear
+		echo
+		echo -e -n "${YELLOW} [+] Input this Server IP (Example: ${BLUE}192.168.15.100${YELLOW}): "${NC}
+		read rsyslog_serverip
+		echo -e -n "${YELLOW} [+] Input new port for Remote Logging (Example: ${BLUE}514${YELLOW}): "${NC}
+		read rsyslog_port
+		echo -e "${YELLOW} [+] Create backup and config file (${BLUE}/etc/rsyslog.conf${YELLOW})."${NC} 
+		cp -a /etc/rsyslog.conf /etc/rsyslog.conf.bk
+		sed -i 's|#$ModLoad imtcp|$ModLoad imtcp|' /etc/rsyslog.conf
+		sed -i 's|#$InputTCPServerRun 514|$InputTCPServerRun 514|' /etc/rsyslog.conf
+		systemctl restart rsyslog
+		echo
+		echo -e "${YELLOW} [+] Enable port $rsyslog_port (Firewalld):"${NC}
+		firewall-cmd --add-port=${rsyslog_port}/tcp --permanent; firewall-cmd --reload; firewall-cmd --list-ports
+		echo
+		echo -e "${YELLOW} [*] Rsyslog status:"${NC}
+		systemctl restart rsyslog; systemctl status rsyslog
+		echo
+		echo
+		echo -e "$PAKTC"
+		read $READAK
+		clear
+		echo
+		echo -e "${YELLOW} Log-in to another Server and add this line to file (/etc/rsyslog.conf): ${BLUE}*.* @@${rsyslog_serverip}:${rsyslog_port}."${NC}
+		echo -e "${YELLOW} Then type: ${BLUE}systemctl restart rsyslog${YELLOW} to restart service."${NC}
+		echo
+		echo
+		echo -e "$PAKTGB"
+		read $READAK
+}
 
 ##############################################################################################################
 
@@ -1720,7 +1943,42 @@ f_updatetools() {
 f_updatecentos() {
 		clear
 		echo
-			
+		echo -e "${YELLOW} [*] Check the version of your current release:"${NC} 
+		echo
+		cat /etc/centos-release
+		echo
+		echo -e "${YELLOW} [*] Check for available updates:"${NC} 
+		echo
+		yum check-update
+		echo
+		echo -e "${CYAN} [*] ${YELLOW}Here is a list of available updates ${BLUE}(Including the core Operating System updates)${YELLOW}."${NC}
+		echo -e "${YELLOW}     Backing up important server data should be done before running a Operating System upgrade."${NC} 
+		echo -e "${BLUE}     (Take a moment to verify your system backups)."${NC}
+		echo
+		echo
+		echo -e -n "${YELLOW} Do you want to continue? ${CYAN}[YES/NO]${YELLOW}: "${NC}
+			read confirm_update
+		case $confirm_update in
+			yes|Yes|YES|y|Y)
+			clear
+			echo
+			echo -e "${YELLOW} [-] Clear the caches and lists in the local yum repositories."${NC} 
+			echo
+			yum clean all; yum update; clear
+			echo
+			echo -e "${YELLOW} [*] Verify the current version on CentOS after updated."${NC} 
+			echo
+			cat /etc/centos-release
+			;;
+			no|No|NO|n|N)
+			;;
+			*)
+			echo
+			echo -e "${RED} *** Invalid Choice *** "${NC}
+			break
+			;;    
+			esac 
+
 		echo
 		echo
 		echo -e "$PAKTGB"
@@ -1733,7 +1991,7 @@ f_search() {
 		clear
 		echo
 	#Identified Application	
-		echo -e -n "${YELLOW}Input your Application: ${NC}"
+		echo -e -n "${YELLOW}Input your Application: "${NC}
 		read application
 		
 	#Check Application installed or not yet
@@ -1747,7 +2005,7 @@ f_search() {
 			echo
 			clear
 			echo
-			echo -e "${YELLOW}Please input exactly what you need to find.${NC}"	
+			echo -e "${YELLOW}Please input exactly what you need to find."${NC}	
 		fi	
 			echo
 			echo
@@ -1761,34 +2019,36 @@ f_search() {
 f_checkinternet() {
 		clear
 		echo
-		echo -e -n "${YELLOW}Checking the network connection, please wait... ${NC}"
+		echo -e "${YELLOW}${BLINK} [*] Checking the network connection, please wait... "${NC}
 		if ping -q -c 1 -W 1 google.com >/dev/null; then
 		echo
 	#Check Local IP
 		clear
 		local_ip=$(ifconfig | grep -w inet | awk '{print $2}')	
 		echo
-		echo -e "${YELLOW}Here is your IP information details: ${NC}"
+		echo -e "${CYAN}[*] ${YELLOW}Here is your IP information details: "${NC}
 		echo
-		echo -e -n "${YELLOW}[+] Local IP:${NC}"
+		echo -e "${YELLOW}[+] Local IP:"${NC}
+		echo -e "${BLUE}$local_ip"${NC}
 		echo
-		echo -e "${BLUE}$local_ip${NC}"
+	#Check DNS-1
+		dns=$(cat /etc/resolv.conf | grep 'nameserver' | awk '{print $2}')
+		echo -e "${YELLOW}[+] DNS:"${NC}
+		echo -e "${BLUE}$dns"${NC}
 		echo
 	#Check Gateway
 		gateway=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
-		echo -e -n "${YELLOW}[+] Gateway: ${BLUE}$gateway${NC}"
+		echo -e "${YELLOW}[+] Gateway: ${BLUE}$gateway${NC}"
 		echo
 	#Check Public IP
-		echo
 		public_ip=$(wget -qO - https://api.ipify.org)
-		echo -e -n "${YELLOW}[+] Public IP: ${BLUE}$public_ip${NC}"
-		echo
+		echo -e "${YELLOW}[+] Public IP: ${BLUE}$public_ip"${NC}
 		else
 			clear
 			echo
-			echo -e "${RED}FAILED!!! ${NC}"
+			echo -e "${RED}FAILED!!! "${NC}
 			echo
-			echo -e "${YELLOW}Please check your network connection and try again...${NC}"
+			echo -e "${YELLOW}Please check your network connection and try again..."${NC}
 		fi
 		echo
 		echo
@@ -1803,7 +2063,7 @@ f_main(){
 	clear
 	f_banner
 	#Main Menu:
-                echo -e "${CYAN}       BASICS${NC}                                ${CYAN}ADVANCED${NC}                          ${CYAN}OTHERS${NC}"
+                echo -e "${CYAN}        BASIC${NC}                                 ${CYAN}ADVANCED${NC}                           ${CYAN}OTHERS"${NC}
                 echo
                 echo -e "${YELLOW}1.  Config Network                  10.  Manage Apache Services          90.  Check for Updates"
                 echo -e          "2.  Connect Putty                   11.  Config DNS (Unbound)            91.  Update CentOS"
@@ -1811,9 +2071,9 @@ f_main(){
                 echo -e          "4.  Create New User                 13.  Create Basic Shell              93.  Check IP"
                 echo -e          "5.  Config Timedate                 14.  Config NFS                      00.  Exit"
                 echo -e          "6.  Create New LVM                  15.  Config SMB"
-                echo -e          "7.  Enable Services (Firewalld)     16.  "
-                echo -e          "8.  Create Web Server               17.  "
-                echo -e          "9.  Create FTP Anonymous Drop Box   18.  "${NC}
+                echo -e          "7.  Enable Services (Firewalld)     16.  Config SMTP"
+                echo -e          "8.  Create Web Server               17.  Create SSH Security"
+                echo -e          "9.  Create FTP Anonymous Drop Box   18.  Setup Remote Logging"${NC}
                 echo
 				
 	echo -e -n "${BLUE}Your Choice: "${NC}
@@ -1835,9 +2095,9 @@ f_main(){
 		13) f_basicshell;;
 		14) f_nfs;;
 		15) f_sambaserver;;
-		16) f_test;;
-		17) f_test;;
-		18) f_test;;
+		16) f_smtpserver;;
+		17) f_ssh;;
+		18) f_rsyslog;;
 		90) f_updatetools;;
 		91) f_updatecentos;;
 		92) f_search;;
