@@ -1737,7 +1737,7 @@ f_smtpserver() {
 			echo
 			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking1.example.com${YELLOW}): "${NC}
 			read smtp_server1
-			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
+			echo -e -n "${YELLOW} [+] Your Secondary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
 			read smtp_server2
 			clear
 			echo
@@ -1769,7 +1769,7 @@ f_smtpserver() {
 			echo
 			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking1.example.com${YELLOW}): "${NC}
 			read smtp_server1
-			echo -e -n "${YELLOW} [+] Your Primary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
+			echo -e -n "${YELLOW} [+] Your Secondary Name Server (Example: ${BLUE}fptjetking2.example.com${YELLOW}): "${NC}
 			read smtp_server2
 			clear
 			echo
