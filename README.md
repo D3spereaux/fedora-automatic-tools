@@ -1,18 +1,8 @@
-                          ######################################################################
-                          #            _       _     _    _    _     _    __     __            #
-                          #           | |     | |   | \  | |  | |   | |   \ \   / /            #
-                          #           | |     | |   |  \ | |  | |   | |    \ \_/ /             #
-                          #           | |     | |   |   \| |  | |   | |    /  _  \             #
-                          #           | |___  | |   | |\   |  | |___| |   / /   \ \            #
-                          #           |_____| |_|   |_| \__|  |_______|  /_/     \_\           #
-                          #           By D3spere@ux                                            #
-                          #                                                                    #
-                          ######################################################################
+![Image description](https://github.com/Despereaux222/fedora-automatic-tools/blob/master/LPI.png)
            
            
 This tools will help the beginner - student - collegue - expert learning LPIC & working in Fedora distro field.
 
-![Image description](https://github.com/Despereaux222/fedora-automatic-tools/blob/master/LPI.png)
 USAGE:
 ------
 
