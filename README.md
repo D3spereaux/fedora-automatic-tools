@@ -22,3 +22,9 @@ USAGE:
 4. Run and enjoy the automation:
 
   - ./automatic-script.sh
+
+VIDEO DEMO:
+------
+Part 1: https://youtu.be/y2PBE8uj_Mg
+
+Part 2: https://youtu.be/jXkoGNw14-8
