@@ -91,6 +91,10 @@ f_setip () {
 	f_staticip_data () {		
 			clear
 			echo
+	#Get card interface name (example: ens19)
+		echo -e "${BLUE} Input Card Interface Name (Example: ens19): "${NC}
+		echo
+		read card_interface
 	#Get data from user (IP - Gateway - DNS)
 		echo -e "${BLUE} Input IP information: "${NC}
 		echo
@@ -112,26 +116,26 @@ f_setip () {
 				yes|Yes|YES|y|Y)
 			#Backup ifcfg-ens33
 					echo
-					cp -a /etc/sysconfig/network-scripts/ifcfg-ens33 /etc/sysconfig/network-scripts/ifcfg-ens33.bk
+					cp -a /etc/sysconfig/network-scripts/ifcfg-$card_interface /etc/sysconfig/network-scripts/ifcfg-$card_interface.bk
 			#Config files
 					echo "
 					TYPE=Ethernet
-					DEVICE=ens33
-					NAME=ens33
+					DEVICE=$card_interface
+					NAME=$card_interface
 					BOOTPROTO=static
 					IPADDR=$staticip
 					PREFIX=24
 					GATEWAY=$gateway
 					DNS1=$dns1
 					DNS2=$dns2
-					ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-ens33
+					ONBOOT=YES" > /etc/sysconfig/network-scripts/ifcfg-$card_interface
 
 					clear
 					echo
 					echo -e "${YELLOW}${BLINK}Backing up & Assigning the Static IP ...$NC"
 			#Restart network services
 					systemctl restart network.service
-					ifconfig ens33
+					ifconfig $card_interface
 					cat /etc/resolv.conf
 					clear
 			#Check ping
@@ -152,7 +156,7 @@ f_setip () {
 							echo
 			#Restore backup files				
 							echo -e "${YELLOW}Restore to previous IP setup via the backup files."${NC}
-							mv /etc/sysconfig/network-scripts/ifcfg-ens33.bk /etc/sysconfig/network-scripts/ifcfg-ens33
+							mv /etc/sysconfig/network-scripts/ifcfg-$card_interface.bk /etc/sysconfig/network-scripts/ifcfg-$card_interface
 							systemctl restart network.service
 							echo
 							echo -e "${YELLOW}Please check your network connection and try again."${NC}
